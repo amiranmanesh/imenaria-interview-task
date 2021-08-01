@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var createUserFailedError = errors.New("create user failed")
+var userCreatingFailedError = errors.New("create user failed")
 var userNotFoundError = errors.New("user not found")
 
 type User struct {
@@ -19,7 +19,7 @@ type User struct {
 func (u *User) Save(db *gorm.DB) error {
 
 	if result := db.Create(&u); result.Error != nil {
-		return createUserFailedError
+		return userCreatingFailedError
 	}
 
 	return nil
