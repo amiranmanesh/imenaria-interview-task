@@ -264,7 +264,7 @@ var file_user_proto_user_proto_rawDesc = []byte{
 	0x02, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x69, 0x64, 0x22, 0x2a, 0x0a,
 	0x0e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
 	0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08,
-	0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x32, 0x7b, 0x0a, 0x0b, 0x55, 0x53, 0x65,
+	0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x32, 0x7b, 0x0a, 0x0b, 0x55, 0x73, 0x65,
 	0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x35, 0x0a, 0x06, 0x43, 0x72, 0x65, 0x61,
 	0x74, 0x65, 0x12, 0x13, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x43,
@@ -296,10 +296,10 @@ var file_user_proto_user_proto_goTypes = []interface{}{
 	(*VerifyResponse)(nil), // 3: user.VerifyResponse
 }
 var file_user_proto_user_proto_depIdxs = []int32{
-	0, // 0: user.USerService.Create:input_type -> user.CreateRequest
-	1, // 1: user.USerService.Verify:input_type -> user.VerifyRequest
-	2, // 2: user.USerService.Create:output_type -> user.CreateResponse
-	3, // 3: user.USerService.Verify:output_type -> user.VerifyResponse
+	0, // 0: user.UserService.Create:input_type -> user.CreateRequest
+	1, // 1: user.UserService.Verify:input_type -> user.VerifyRequest
+	2, // 2: user.UserService.Create:output_type -> user.CreateResponse
+	3, // 3: user.UserService.Verify:output_type -> user.VerifyResponse
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -390,108 +390,108 @@ var _ grpc.ClientConnInterface
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion6
 
-// USerServiceClient is the client API for USerService service.
+// UserServiceClient is the client API for UserService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type USerServiceClient interface {
+type UserServiceClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*VerifyResponse, error)
 }
 
-type uSerServiceClient struct {
+type userServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewUSerServiceClient(cc grpc.ClientConnInterface) USerServiceClient {
-	return &uSerServiceClient{cc}
+func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
+	return &userServiceClient{cc}
 }
 
-func (c *uSerServiceClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
+func (c *userServiceClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
 	out := new(CreateResponse)
-	err := c.cc.Invoke(ctx, "/user.USerService/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.UserService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *uSerServiceClient) Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*VerifyResponse, error) {
+func (c *userServiceClient) Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*VerifyResponse, error) {
 	out := new(VerifyResponse)
-	err := c.cc.Invoke(ctx, "/user.USerService/Verify", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.UserService/Verify", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// USerServiceServer is the server API for USerService service.
-type USerServiceServer interface {
+// UserServiceServer is the server API for UserService service.
+type UserServiceServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	Verify(context.Context, *VerifyRequest) (*VerifyResponse, error)
 }
 
-// UnimplementedUSerServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedUSerServiceServer struct {
+// UnimplementedUserServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedUserServiceServer struct {
 }
 
-func (*UnimplementedUSerServiceServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
+func (*UnimplementedUserServiceServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (*UnimplementedUSerServiceServer) Verify(context.Context, *VerifyRequest) (*VerifyResponse, error) {
+func (*UnimplementedUserServiceServer) Verify(context.Context, *VerifyRequest) (*VerifyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
 }
 
-func RegisterUSerServiceServer(s *grpc.Server, srv USerServiceServer) {
-	s.RegisterService(&_USerService_serviceDesc, srv)
+func RegisterUserServiceServer(s *grpc.Server, srv UserServiceServer) {
+	s.RegisterService(&_UserService_serviceDesc, srv)
 }
 
-func _USerService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(USerServiceServer).Create(ctx, in)
+		return srv.(UserServiceServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.USerService/Create",
+		FullMethod: "/user.UserService/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(USerServiceServer).Create(ctx, req.(*CreateRequest))
+		return srv.(UserServiceServer).Create(ctx, req.(*CreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _USerService_Verify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserService_Verify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(VerifyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(USerServiceServer).Verify(ctx, in)
+		return srv.(UserServiceServer).Verify(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.USerService/Verify",
+		FullMethod: "/user.UserService/Verify",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(USerServiceServer).Verify(ctx, req.(*VerifyRequest))
+		return srv.(UserServiceServer).Verify(ctx, req.(*VerifyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _USerService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "user.USerService",
-	HandlerType: (*USerServiceServer)(nil),
+var _UserService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "user.UserService",
+	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Create",
-			Handler:    _USerService_Create_Handler,
+			Handler:    _UserService_Create_Handler,
 		},
 		{
 			MethodName: "Verify",
-			Handler:    _USerService_Verify_Handler,
+			Handler:    _UserService_Verify_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

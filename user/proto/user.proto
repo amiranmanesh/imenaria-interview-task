@@ -16,14 +16,14 @@ message VerifyRequest {
 
 message CreateResponse {
     bool success = 1;
-    uint32 id = 2;
+    uint id = 2;
 }
 
 message VerifyResponse {
     bool success = 1;
 }
 
-service USerService {
+service UserService {
     rpc Create(CreateRequest) returns (CreateResponse) {};
     rpc Verify(VerifyRequest) returns (VerifyResponse) {};
 }
