@@ -32,17 +32,66 @@ func (r repository) Create(ctx context.Context, bankName, bankCardNumber string,
 	card.CardNumber = bankCardNumber
 	card.UserID = userID
 
-	cid, err := card.Save(r.db)
+	cardId, err := card.Save(r.db)
 	if err != nil {
 		level.Error(logger).Log("Error is: ", err)
-		return cid, err
+		return cardId, err
 	}
 
-	logger.Log("Bank Card created with id: ", cid)
-	return cid, nil
+	logger.Log("Bank Card created successfully with card id: ", cardId)
+	return cardId, nil
 }
 
-func (r repository) GetCardInfoByCardID(ctx context.Context, cardId uint) (*BankCardModel, error) {
+func (r repository) Update(ctx context.Context, cardId uint, bankName, cardNumber string) error {
+	//TODO: handle ctx
+
+	logger := log.With(r.logger, "Update")
+	logger.Log("Start updating bank card object with card id", cardId)
+
+	card := &sql.BankCard{}
+	card.ID = cardId
+
+	if err := card.Find(r.db); err != nil {
+		level.Error(logger).Log("Error is: ", err)
+		return err
+	}
+
+	if bankName != "" {
+		card.BankName = bankName
+	}
+	if cardNumber != "" {
+		card.CardNumber = cardNumber
+	}
+
+	if err := card.Update(r.db); err != nil {
+		level.Error(logger).Log("Error is: ", err)
+		return err
+	}
+
+	logger.Log("Bank Card updated successfully with card id: ", cardId)
+	return nil
+}
+
+func (r repository) Delete(ctx context.Context, cardId uint) error {
+	//TODO: handle ctx
+
+	logger := log.With(r.logger, "Delete")
+	logger.Log("Start updating bank card object with card id", cardId)
+
+	card := &sql.BankCard{}
+	card.ID = cardId
+
+	if err := card.Delete(r.db); err != nil {
+		level.Error(logger).Log("Error is: ", err)
+		return err
+	}
+
+	logger.Log("Bank Card deleted successfully with card id: ", cardId)
+	return nil
+
+}
+
+func (r repository) GetCardByCardID(ctx context.Context, cardId uint) (*BankCardModel, error) {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Get Card Info By Card ID")
@@ -51,7 +100,7 @@ func (r repository) GetCardInfoByCardID(ctx context.Context, cardId uint) (*Bank
 	card := &sql.BankCard{}
 	card.ID = cardId
 
-	if err := card.FindByCardID(r.db); err != nil {
+	if err := card.Find(r.db); err != nil {
 		level.Error(logger).Log("Error is: ", err)
 		return nil, err
 	}
@@ -62,36 +111,36 @@ func (r repository) GetCardInfoByCardID(ctx context.Context, cardId uint) (*Bank
 	cardInfo.BankName = card.BankName
 	cardInfo.CardNumber = card.CardNumber
 
-	logger.Log("Card found")
+	logger.Log("Card found successfully")
 	return cardInfo, nil
 }
 
-func (r repository) GetCardsByUserID(ctx context.Context, userId uint) ([]*BankCardModel, error) {
-	//TODO: handle ctx
-
-	logger := log.With(r.logger, "Get Cards Info By User ID")
-	logger.Log("Start finding bank card objects with user id %d", userId)
-
-	card := sql.BankCard{}
-	cards, err := card.GetAllByUserID(r.db)
-
-	if err != nil {
-		level.Error(logger).Log("Error is: ", err)
-		return nil, err
-	}
-
-	var result []*BankCardModel
-
-	for _, card := range cards {
-		temp := &BankCardModel{}
-		temp.UserID = userId
-		temp.CardID = card.ID
-		temp.CardNumber = card.CardNumber
-		temp.BankName = card.BankName
-
-		result = append(result, temp)
-	}
-
-	logger.Log("Found ", len(result), " Items")
-	return result, nil
-}
+//func (r repository) GetCardsByUserID(ctx context.Context, userId uint) ([]*BankCardModel, error) {
+//	//TODO: handle ctx
+//
+//	logger := log.With(r.logger, "Get Cards Info By User ID")
+//	logger.Log("Start finding bank card objects with user id %d", userId)
+//
+//	card := sql.BankCard{}
+//	cards, err := card.GetAllByUserID(r.db)
+//
+//	if err != nil {
+//		level.Error(logger).Log("Error is: ", err)
+//		return nil, err
+//	}
+//
+//	var result []*BankCardModel
+//
+//	for _, card := range cards {
+//		temp := &BankCardModel{}
+//		temp.UserID = userId
+//		temp.CardID = card.ID
+//		temp.CardNumber = card.CardNumber
+//		temp.BankName = card.BankName
+//
+//		result = append(result, temp)
+//	}
+//
+//	logger.Log("Found ", len(result), " Items")
+//	return result, nil
+//}

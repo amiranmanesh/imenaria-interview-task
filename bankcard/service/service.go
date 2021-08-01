@@ -6,8 +6,9 @@ import (
 
 type IRepository interface {
 	Create(ctx context.Context, bankName, bankCardNumber string, userID uint) (uint, error)
-	GetCardInfoByCardID(ctx context.Context, cardId uint) (*BankCardModel, error)
-	GetCardsByUserID(ctx context.Context, userId uint) ([]*BankCardModel, error)
+	Update(ctx context.Context, cardId uint, bankName, cardNumber string) error
+	Delete(ctx context.Context, cardId uint) error
+	GetCardByCardID(ctx context.Context, cardId uint) (*BankCardModel, error)
 }
 
 type BankCardModel struct {
