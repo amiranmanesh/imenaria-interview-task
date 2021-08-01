@@ -13,66 +13,50 @@ func NewHTTPServer(endpoints endpoint.Endpoints) http.Handler {
 
 	user := router.Group("/user")
 	{
-		user.POST("", func(c *gin.Context) {
-			gin.WrapH(httptransport.NewServer(
-				endpoints.CreateUser,
-				endpoint.DecodeCreateUserReq,
-				endpoint.EncodeResponse,
-			))
-		})
-		user.GET("/:user_id", func(c *gin.Context) {
-			gin.WrapH(httptransport.NewServer(
-				endpoints.GetUser,
-				endpoint.DecodeGetUserReq,
-				endpoint.EncodeResponse,
-			))
-		})
-		user.POST("/:user_id", func(c *gin.Context) {
-			gin.WrapH(httptransport.NewServer(
-				endpoints.UpdateUser,
-				endpoint.DecodeUpdateUserReq,
-				endpoint.EncodeResponse,
-			))
-		})
-		user.DELETE("/:user_id", func(c *gin.Context) {
-			gin.WrapH(httptransport.NewServer(
-				endpoints.DeleteUser,
-				endpoint.DecodeDeleteUserReq,
-				endpoint.EncodeResponse,
-			))
-		})
+		user.POST("/create", gin.WrapH(httptransport.NewServer(
+			endpoints.CreateUser,
+			endpoint.DecodeCreateUserReq,
+			endpoint.EncodeResponse,
+		)))
+		user.GET("/get", gin.WrapH(httptransport.NewServer(
+			endpoints.GetUser,
+			endpoint.DecodeGetUserReq,
+			endpoint.EncodeResponse,
+		)))
+		user.POST("/update", gin.WrapH(httptransport.NewServer(
+			endpoints.UpdateUser,
+			endpoint.DecodeUpdateUserReq,
+			endpoint.EncodeResponse,
+		)))
+		user.DELETE("/delete", gin.WrapH(httptransport.NewServer(
+			endpoints.DeleteUser,
+			endpoint.DecodeDeleteUserReq,
+			endpoint.EncodeResponse,
+		)))
 	}
 
 	card := router.Group("/card")
 	{
-		card.POST("", func(c *gin.Context) {
-			gin.WrapH(httptransport.NewServer(
-				endpoints.CreateCard,
-				endpoint.DecodeCreateCardReq,
-				endpoint.EncodeResponse,
-			))
-		})
-		card.GET("/:card_id", func(c *gin.Context) {
-			gin.WrapH(httptransport.NewServer(
-				endpoints.GetCard,
-				endpoint.DecodeGetCardReq,
-				endpoint.EncodeResponse,
-			))
-		})
-		card.POST("/:card_id", func(c *gin.Context) {
-			gin.WrapH(httptransport.NewServer(
-				endpoints.UpdateCard,
-				endpoint.DecodeUpdateCardReq,
-				endpoint.EncodeResponse,
-			))
-		})
-		card.DELETE("/:card_id", func(c *gin.Context) {
-			gin.WrapH(httptransport.NewServer(
-				endpoints.DeleteCard,
-				endpoint.DecodeDeleteCardReq,
-				endpoint.EncodeResponse,
-			))
-		})
+		card.POST("/create", gin.WrapH(httptransport.NewServer(
+			endpoints.CreateCard,
+			endpoint.DecodeCreateCardReq,
+			endpoint.EncodeResponse,
+		)))
+		card.GET("/get", gin.WrapH(httptransport.NewServer(
+			endpoints.GetCard,
+			endpoint.DecodeGetCardReq,
+			endpoint.EncodeResponse,
+		)))
+		card.POST("/update", gin.WrapH(httptransport.NewServer(
+			endpoints.UpdateCard,
+			endpoint.DecodeUpdateCardReq,
+			endpoint.EncodeResponse,
+		)))
+		card.DELETE("/delete", gin.WrapH(httptransport.NewServer(
+			endpoints.DeleteCard,
+			endpoint.DecodeDeleteCardReq,
+			endpoint.EncodeResponse,
+		)))
 	}
 
 	return router
