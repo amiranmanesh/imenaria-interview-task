@@ -7,10 +7,10 @@ import (
 )
 
 type IRepository interface {
-	Create(ctx context.Context, bankName, bankCardNumber string, userID uint) (uint, error)
+	Create(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error)
 	Update(ctx context.Context, cardId uint, bankName, cardNumber string) error
 	Delete(ctx context.Context, cardId uint) error
-	GetCardByCardID(ctx context.Context, cardId uint) (*BankCardModel, error)
+	Get(ctx context.Context, cardId uint) (*BankCardModel, error)
 }
 
 type BankCardModel struct {
@@ -29,8 +29,8 @@ type service struct {
 	logger     log.Logger
 }
 
-func (s service) Create(ctx context.Context, bankName, bankCardNumber string, userID uint) (uint, error) {
-	return s.repository.Create(ctx, bankName, bankCardNumber, userID)
+func (s service) Create(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error) {
+	return s.repository.Create(ctx, bankName, cardNumber, userID)
 }
 
 func (s service) Update(ctx context.Context, cardId uint, bankName, cardNumber string) error {
@@ -41,11 +41,11 @@ func (s service) Delete(ctx context.Context, cardId uint) error {
 	return s.repository.Delete(ctx, cardId)
 }
 
-func (s service) GetCardByCardID(ctx context.Context, cardId uint) (*uint, *string, *string, *uint, error) {
-	model, err := s.repository.GetCardByCardID(ctx, cardId)
+func (s service) Get(ctx context.Context, cardId uint) (uint, string, string, uint, error) {
+	model, err := s.repository.Get(ctx, cardId)
 	if err != nil {
-		return &model.CardID, &model.BankName, &model.CardNumber, &model.UserID, err
+		return model.CardID, model.BankName, model.CardNumber, model.UserID, err
 	} else {
-		return nil, nil, nil, nil, err
+		return 0, "", "", 0, err
 	}
 }

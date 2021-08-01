@@ -21,7 +21,7 @@ type repository struct {
 	logger log.Logger
 }
 
-func (r repository) Create(ctx context.Context, bankName, bankCardNumber string, userID uint) (uint, error) {
+func (r repository) Create(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error) {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Create")
@@ -29,7 +29,7 @@ func (r repository) Create(ctx context.Context, bankName, bankCardNumber string,
 
 	card := &sql.BankCard{}
 	card.BankName = bankName
-	card.CardNumber = bankCardNumber
+	card.CardNumber = cardNumber
 	card.UserID = userID
 
 	cardId, err := card.Save(r.db)
@@ -91,7 +91,7 @@ func (r repository) Delete(ctx context.Context, cardId uint) error {
 
 }
 
-func (r repository) GetCardByCardID(ctx context.Context, cardId uint) (*BankCardModel, error) {
+func (r repository) Get(ctx context.Context, cardId uint) (*BankCardModel, error) {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Get Card Info By Card ID")

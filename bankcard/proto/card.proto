@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package card;
+option go_package = "bankcard/proto";
+
+message CreateRequest {
+    string bankName = 1;
+    string cardNumber = 2;
+    int32 userId = 3;
+}
+
+message UpdateRequest {
+    int32 cardId = 1;
+    string bankName = 2;
+    string cardNumber = 3;
+}
+
+message DeleteRequest {
+    int32 cardId = 1;
+}
+
+message GetRequest {
+    int32 cardId = 1;
+}
+
+message CreateResponse {
+    bool success = 1;
+    int32 cardId = 2;
+}
+
+message UpdateResponse {
+    bool success = 1;
+}
+
+message DeleteResponse {
+    bool success = 1;
+}
+
+message GetResponse {
+    bool success = 1;
+    int32 cardId = 2;
+    string bankName = 3;
+    string cardNumber = 4;
+    int32 userId = 5;
+}
+
+service UserService {
+    rpc Create(CreateRequest) returns (CreateResponse) {};
+    rpc Update(UpdateRequest) returns (UpdateResponse) {};
+    rpc Delete(DeleteRequest) returns (DeleteResponse) {};
+    rpc Get(GetRequest) returns (GetResponse) {};
+}
