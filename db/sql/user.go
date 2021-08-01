@@ -16,13 +16,13 @@ type User struct {
 	Avatar    string `gorm:"type:varchar(200);" json:"avatar"`
 }
 
-func (u *User) Save(db *gorm.DB) error {
-
-	if result := db.Create(&u); result.Error != nil {
-		return userCreatingFailedError
+func (u *User) Save(db *gorm.DB) (uint, error) {
+	result := db.Create(&u)
+	if result.Error != nil {
+		return -1, userCreatingFailedError
 	}
 
-	return nil
+	return u.ID, nil
 }
 
 func (u *User) Find(db *gorm.DB) error {
