@@ -11,12 +11,12 @@ message CreateRequest {
 }
 
 message VerifyRequest {
-    uint32 id = 1;
+    int32 id = 1;
 }
 
 message CreateResponse {
     bool success = 1;
-    uint id = 2;
+    int32 id = 2;
 }
 
 message VerifyResponse {

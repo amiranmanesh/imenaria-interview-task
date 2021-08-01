@@ -28,7 +28,7 @@ func EncodeCreateResponse(ctx context.Context, response interface{}) (interface{
 	res := response.(CreateResponse)
 	return &proto.CreateResponse{
 		Success: res.Success,
-		Id:      uint32(res.UserID),
+		Id:      int32(res.UserID),
 	}, nil
 }
 
