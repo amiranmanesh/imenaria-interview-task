@@ -24,30 +24,29 @@ type Endpoints struct {
 
 func makeCreateEndpoint(s IService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		//req := request.(LoginRequest)
-		//token, err := s.Login(ctx, req.Email, req.Password)
-		//if err != nil {
-		//	return LoginResponse{Success: false}, err
-		//} else {
-		//	return LoginResponse{
-		//		Success: true,
-		//		Token:   token,
-		//	}, nil
-		//}
+		req := request.(CreateRequest)
+		uid, err := s.Create(ctx, req.Name, req.Gender, req.BirthYear, req.Avatar)
+		if err != nil {
+			return CreateResponse{Success: false}, err
+		} else {
+			return CreateResponse{
+				Success: true,
+				UserID:  uid,
+			}, nil
+		}
 	}
 }
 
 func makeVerifyEndpoint(s IService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		//req := request.(VerifyTokenRequest)
-		//userID, err := s.Verify(ctx, req.Token)
-		//if err != nil {
-		//	return VerifyTokenResponse{Success: false}, err
-		//} else {
-		//	return VerifyTokenResponse{
-		//		Success: true,
-		//		UserID:  int32(userID),
-		//	}, nil
-		//}
+		req := request.(VerifyRequest)
+		err := s.Verify(ctx, req.UserID)
+		if err != nil {
+			return VerifyResponse{Success: false}, err
+		} else {
+			return VerifyResponse{
+				Success: true,
+			}, nil
+		}
 	}
 }

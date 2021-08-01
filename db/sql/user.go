@@ -19,7 +19,7 @@ type User struct {
 func (u *User) Save(db *gorm.DB) (uint, error) {
 	result := db.Create(&u)
 	if result.Error != nil {
-		return -1, userCreatingFailedError
+		return 0, userCreatingFailedError
 	}
 
 	return u.ID, nil
