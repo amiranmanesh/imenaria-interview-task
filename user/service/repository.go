@@ -9,7 +9,7 @@ import (
 )
 
 func NewUserRepository(db *gorm.DB, logger log.Logger) IRepository {
-	if err := db.AutoMigrate(sql.User{}); err != nil {
+	if err := db.AutoMigrate(&sql.User{}); err != nil {
 		level.Error(logger).Log("Repository auto migration failed", err)
 		panic(err)
 	}
