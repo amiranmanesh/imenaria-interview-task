@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/amiranmanesh/imenaria-interview-task/bankcard/endpoint"
 	"github.com/go-kit/kit/log"
 )
@@ -43,9 +44,10 @@ func (s service) Delete(ctx context.Context, cardId uint) error {
 
 func (s service) Get(ctx context.Context, cardId uint) (uint, string, string, uint, error) {
 	model, err := s.repository.Get(ctx, cardId)
+	fmt.Println(1, model)
 	if err != nil {
-		return model.CardID, model.BankName, model.CardNumber, model.UserID, err
-	} else {
 		return 0, "", "", 0, err
+	} else {
+		return model.CardID, model.BankName, model.CardNumber, model.UserID, err
 	}
 }

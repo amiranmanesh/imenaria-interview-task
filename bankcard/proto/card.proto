@@ -44,7 +44,7 @@ message GetResponse {
     int32 userId = 5;
 }
 
-service UserService {
+service CardService {
     rpc Create(CreateRequest) returns (CreateResponse) {};
     rpc Update(UpdateRequest) returns (UpdateResponse) {};
     rpc Delete(DeleteRequest) returns (DeleteResponse) {};
