@@ -15,8 +15,8 @@ type IService interface {
 func MakeEndpoint(s IService) Endpoints {
 	return Endpoints{
 		Create: makeCreateEndpoint(s),
-		Update: makeCreateEndpoint(s),
-		Delete: makeCreateEndpoint(s),
+		Update: makeUpdateEndpoint(s),
+		Delete: makeDeleteEndpoint(s),
 		Verify: makeVerifyEndpoint(s),
 	}
 }

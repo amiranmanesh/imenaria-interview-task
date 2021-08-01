@@ -62,7 +62,8 @@ func main() {
 		lis, err := net.Listen(
 			"tcp",
 			fmt.Sprintf("%s:%s",
-				os.Getenv("GRPC_HOST"), os.Getenv("GRPC_USER_PORT")),
+				os.Getenv("GRPC_HOST"), os.Getenv("GRPC_USER_PORT"),
+			),
 		)
 		if err != nil {
 			panic(fmt.Sprintf("User Service: Failed to listen %v", err))
