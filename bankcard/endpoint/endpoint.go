@@ -2,7 +2,6 @@ package endpoint
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-kit/kit/endpoint"
 )
 
@@ -76,7 +75,6 @@ func makeGetEndpoint(s IService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetRequest)
 		cardID, bankName, cardNumber, userID, err := s.Get(ctx, req.CardID)
-		fmt.Println(2, cardNumber)
 		if err != nil {
 			return GetResponse{Success: false}, err
 		} else {

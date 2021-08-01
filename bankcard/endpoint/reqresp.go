@@ -2,7 +2,6 @@ package endpoint
 
 import (
 	"context"
-	"fmt"
 	"github.com/amiranmanesh/imenaria-interview-task/bankcard/proto"
 )
 
@@ -91,7 +90,6 @@ func DecodeDeleteRequest(ctx context.Context, request interface{}) (interface{},
 
 func EncodeGetResponse(ctx context.Context, response interface{}) (interface{}, error) {
 	res := response.(GetResponse)
-	fmt.Println(3, res)
 	return &proto.GetResponse{
 		Success:    res.Success,
 		CardId:     int32(res.CardID),

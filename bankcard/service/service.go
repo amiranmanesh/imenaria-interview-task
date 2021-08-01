@@ -54,7 +54,6 @@ func (s service) Delete(ctx context.Context, cardId uint) error {
 
 func (s service) Get(ctx context.Context, cardId uint) (uint, string, string, uint, error) {
 	model, err := s.repository.Get(ctx, cardId)
-	fmt.Println(1, model)
 	if err != nil {
 		return 0, "", "", 0, err
 	} else {
