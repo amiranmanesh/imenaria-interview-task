@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package user;
+option go_package = "user/proto";
+
+message CreateRequest {
+    string name = 1;
+    string gender = 2;
+    int32 birthYear = 3;
+    string avatar = 4;
+}
+
+message VerifyRequest {
+    uint32 id = 1;
+}
+
+message CreateResponse {
+    bool success = 1;
+    uint32 id = 2;
+}
+
+message VerifyResponse {
+    bool success = 1;
+}
+
+service USerService {
+    rpc Create(CreateRequest) returns (CreateResponse) {};
+    rpc Verify(VerifyRequest) returns (VerifyResponse) {};
+}
