@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var bankCardCreatingFailedError = errors.New("create bank card failed")
+var bankCardCreatingFailedError = errors.New("creating bank card failed")
 var bankCardUpdatingFailedError = errors.New("updating bank card failed")
 var bankCardDeletingFailedError = errors.New("deleting bank card failed")
 var bankCardNotFoundError = errors.New("bank card not found")

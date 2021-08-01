@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
-	"github.com/amiranmanesh/imenaria-interview-task/db/sql"
+
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"gorm.io/gorm"
+
+	"github.com/amiranmanesh/imenaria-interview-task/db/sql"
 )
 
 func NewCardRepository(db *gorm.DB, logger log.Logger) IRepository {
@@ -76,7 +78,7 @@ func (r repository) Delete(ctx context.Context, cardId uint) error {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Delete")
-	logger.Log("Start updating bank card object with card id", cardId)
+	logger.Log("Start deleting bank card object with card id", cardId)
 
 	card := &sql.BankCard{}
 	card.ID = cardId

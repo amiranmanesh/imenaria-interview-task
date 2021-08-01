@@ -43,14 +43,68 @@ func (r repository) Create(ctx context.Context, name, gender string, birthYear i
 	return uid, nil
 }
 
-func (r repository) Verify(ctx context.Context, id uint) error {
+func (r repository) Update(ctx context.Context, userId uint, name, gender string, birthYear int, avatar string) error {
+	//TODO: handle ctx
+
+	logger := log.With(r.logger, "Update")
+	logger.Log("Start updating user object with user id", userId)
+
+	user := &sql.User{}
+	user.ID = userId
+
+	if err := user.Find(r.db); err != nil {
+		level.Error(logger).Log("Error is: ", err)
+		return err
+	}
+
+	if name != "" {
+		user.Name = name
+	}
+	if gender != "" {
+		user.Gender = gender
+	}
+	if birthYear != 0 {
+		user.BirthYear = birthYear
+	}
+	if avatar != "" {
+		user.Avatar = avatar
+	}
+
+	if err := user.Update(r.db); err != nil {
+		level.Error(logger).Log("Error is: ", err)
+		return err
+	}
+
+	logger.Log("User updated successfully with user id: ", userId)
+	return nil
+}
+
+func (r repository) Delete(ctx context.Context, userId uint) error {
+	//TODO: handle ctx
+
+	logger := log.With(r.logger, "Delete")
+	logger.Log("Start deleting user object with user id", userId)
+
+	user := &sql.User{}
+	user.ID = userId
+
+	if err := user.Delete(r.db); err != nil {
+		level.Error(logger).Log("Error is: ", err)
+		return err
+	}
+
+	logger.Log("User deleted successfully with user id: ", userId)
+	return nil
+}
+
+func (r repository) Verify(ctx context.Context, userId uint) error {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Verify")
-	logger.Log("Start verifying user object with id: ", id)
+	logger.Log("Start verifying user object with user id: ", userId)
 
 	user := &sql.User{}
-	user.ID = id
+	user.ID = userId
 
 	if err := user.Find(r.db); err != nil {
 		level.Error(logger).Log("Error is: ", err)

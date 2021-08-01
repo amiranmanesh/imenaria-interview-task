@@ -5,7 +5,9 @@ import (
 	"gorm.io/gorm"
 )
 
-var userCreatingFailedError = errors.New("create user failed")
+var userCreatingFailedError = errors.New("creating user failed")
+var userUpdatingFailedError = errors.New("updating user failed")
+var userDeletingFailedError = errors.New("deleting user failed")
 var userNotFoundError = errors.New("user not found")
 var userAssignCardError = errors.New("assign card failed")
 
@@ -23,13 +25,26 @@ func (u *User) Save(db *gorm.DB) (uint, error) {
 	if result.Error != nil {
 		return 0, userCreatingFailedError
 	}
-
 	return u.ID, nil
 }
 
 func (u *User) Find(db *gorm.DB) error {
 	if result := db.First(&u, "id = ?", u.ID); result.Error != nil {
 		return userNotFoundError
+	}
+	return nil
+}
+
+func (u *User) Update(db *gorm.DB) error {
+	if result := db.Save(&u); result.Error != nil {
+		return userUpdatingFailedError
+	}
+	return nil
+}
+
+func (u *User) Delete(db *gorm.DB) error {
+	if result := db.Delete(&u); result.Error != nil {
+		return userDeletingFailedError
 	}
 	return nil
 }
