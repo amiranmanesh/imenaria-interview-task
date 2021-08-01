@@ -22,6 +22,9 @@ import (
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		panic(fmt.Sprintf("User Service: Failed to load .env %v", err))
+	}
 
 	var logger log.Logger
 	{
@@ -56,7 +59,7 @@ func main() {
 	}()
 
 	go func() {
-		lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%s", os.Getenv("GRPC_PORT")))
+		lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", os.Getenv("GRPC_HOST"), os.Getenv("GRPC_PORT")))
 		if err != nil {
 			panic(fmt.Sprintf("User Service: Failed to listen %v", err))
 		}
@@ -73,9 +76,6 @@ func main() {
 }
 
 func getDataBaseModel() *gorm.DB {
-	if err := godotenv.Load(); err != nil {
-		panic(fmt.Sprintf("User Service: Failed to load .env %v", err))
-	}
 	dsn := fmt.Sprintf(
 		"%s:%s@(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		os.Getenv("DATABASE_USER"),
