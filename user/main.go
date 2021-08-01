@@ -84,7 +84,6 @@ func getDataBaseModel() *gorm.DB {
 		os.Getenv("DATABASE_PORT"),
 		os.Getenv("DATABASE_NAME"),
 	)
-	fmt.Println(dsn)
 	connection, err := gorm.Open(
 		mysql.Open(dsn),
 		&gorm.Config{},
