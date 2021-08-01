@@ -28,7 +28,7 @@ func EncodeCreateResponse(ctx context.Context, response interface{}) (interface{
 	res := response.(CreateResponse)
 	return &proto.CreateResponse{
 		Success: res.Success,
-		Id:      int32(res.UserID),
+		UserId:  int32(res.UserID),
 	}, nil
 }
 
@@ -46,5 +46,5 @@ func EncodeVerifyResponse(ctx context.Context, response interface{}) (interface{
 
 func DecodeVerifyRequest(ctx context.Context, request interface{}) (interface{}, error) {
 	req := request.(*proto.VerifyRequest)
-	return VerifyRequest{UserID: uint(req.Id)}, nil
+	return VerifyRequest{UserID: uint(req.UserId)}, nil
 }
