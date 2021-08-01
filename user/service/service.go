@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"github.com/amiranmanesh/imenaria-interview-task/user/endpoint"
+	"github.com/go-kit/kit/log"
 )
 
 type IRepository interface {
@@ -9,26 +11,19 @@ type IRepository interface {
 	Verify(ctx context.Context, id uint) error
 }
 
-//
-//func NewService(repository IRepository, logger log.Logger) endpoint.IService {
-//	return &service{repository, log.With(logger, "service")}
-//}
-//
-//type service struct {
-//	repository IRepository
-//	logger     log.Logger
-//}
-//
-//func (s service) SignUp(ctx context.Context, name, email, password string) (string, error) {
-//	hashPassword := encrypting.GetHashedPassword(password)
-//	return s.repository.SignUp(ctx, name, email, hashPassword)
-//}
-//
-//func (s service) Login(ctx context.Context, email, password string) (string, error) {
-//	hashPassword := encrypting.GetHashedPassword(password)
-//	return s.repository.Login(ctx, email, hashPassword)
-//}
-//
-//func (s service) Verify(ctx context.Context, token string) (uint, error) {
-//	return s.repository.Verify(ctx, token)
-//}
+func NewService(repository IRepository, logger log.Logger) endpoint.IService {
+	return &service{repository, log.With(logger, "service")}
+}
+
+type service struct {
+	repository IRepository
+	logger     log.Logger
+}
+
+func (s service) Create(ctx context.Context, name, gender string, birthYear int, avatar string) (uint, error) {
+	return s.repository.Create(ctx, name, gender, birthYear, avatar)
+}
+
+func (s service) Verify(ctx context.Context, id uint) error {
+	return s.repository.Verify(ctx, id)
+}
