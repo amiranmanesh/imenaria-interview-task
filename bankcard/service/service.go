@@ -31,11 +31,21 @@ type service struct {
 }
 
 func (s service) Create(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error) {
-	return s.repository.Create(ctx, bankName, cardNumber, userID)
+	if len(cardNumber) == 16 || len(cardNumber) == 20 {
+		return s.repository.Create(ctx, bankName, cardNumber, userID)
+	} else {
+		return 0, fmt.Errorf("card number must be 16 or 20")
+	}
 }
 
 func (s service) Update(ctx context.Context, cardId uint, bankName, cardNumber string) error {
-	return s.repository.Update(ctx, cardId, bankName, cardNumber)
+	if cardNumber == "" {
+		return s.repository.Update(ctx, cardId, bankName, "")
+	} else if len(cardNumber) == 16 || len(cardNumber) == 20 {
+		return s.repository.Update(ctx, cardId, bankName, cardNumber)
+	} else {
+		return fmt.Errorf("card number must be 16 or 20")
+	}
 }
 
 func (s service) Delete(ctx context.Context, cardId uint) error {
