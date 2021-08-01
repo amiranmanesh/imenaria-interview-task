@@ -10,6 +10,7 @@ import (
 	"github.com/amiranmanesh/imenaria-interview-task/user/transport"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"gorm.io/driver/mysql"
@@ -72,6 +73,9 @@ func main() {
 }
 
 func getDataBaseModel() *gorm.DB {
+	if err := godotenv.Load(); err != nil {
+		panic(fmt.Sprintf("User Service: Failed to load .env %v", err))
+	}
 	dsn := fmt.Sprintf(
 		"%s:%s@(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		os.Getenv("DATABASE_USER"),
@@ -80,6 +84,7 @@ func getDataBaseModel() *gorm.DB {
 		os.Getenv("DATABASE_PORT"),
 		os.Getenv("DATABASE_NAME"),
 	)
+	fmt.Println(dsn)
 	connection, err := gorm.Open(
 		mysql.Open(dsn),
 		&gorm.Config{},
