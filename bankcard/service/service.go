@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"github.com/amiranmanesh/imenaria-interview-task/bankcard/endpoint"
+	"github.com/go-kit/kit/log"
 )
 
 type IRepository interface {
@@ -18,20 +20,32 @@ type BankCardModel struct {
 	CardID     uint
 }
 
-//
-//func NewService(repository IRepository, logger log.Logger) endpoint.IService {
-//	return &service{repository, log.With(logger, "service")}
-//}
-//
-//type service struct {
-//	repository IRepository
-//	logger     log.Logger
-//}
-//
-//func (s service) Create(ctx context.Context, name, gender string, birthYear int, avatar string) (uint, error) {
-//	return s.repository.Create(ctx, name, gender, birthYear, avatar)
-//}
-//
-//func (s service) Verify(ctx context.Context, id uint) error {
-//	return s.repository.Verify(ctx, id)
-//}
+func NewService(repository IRepository, logger log.Logger) endpoint.IService {
+	return &service{repository, log.With(logger, "service")}
+}
+
+type service struct {
+	repository IRepository
+	logger     log.Logger
+}
+
+func (s service) Create(ctx context.Context, bankName, bankCardNumber string, userID uint) (uint, error) {
+	return s.repository.Create(ctx, bankName, bankCardNumber, userID)
+}
+
+func (s service) Update(ctx context.Context, cardId uint, bankName, cardNumber string) error {
+	return s.repository.Update(ctx, cardId, bankName, cardNumber)
+}
+
+func (s service) Delete(ctx context.Context, cardId uint) error {
+	return s.repository.Delete(ctx, cardId)
+}
+
+func (s service) GetCardByCardID(ctx context.Context, cardId uint) (*uint, *string, *string, *uint, error) {
+	model, err := s.repository.GetCardByCardID(ctx, cardId)
+	if err != nil {
+		return &model.CardID, &model.BankName, &model.CardNumber, &model.UserID, err
+	} else {
+		return nil, nil, nil, nil, err
+	}
+}
