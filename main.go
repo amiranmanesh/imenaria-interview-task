@@ -18,12 +18,6 @@ import (
 	"syscall"
 )
 
-var (
-	httpAddr = flag.String("http.addr",
-		fmt.Sprintf(":%s", os.Getenv("HTTP_PORT")),
-		"HTTP listen address")
-)
-
 func main() {
 	if err := godotenv.Load(); err != nil {
 		panic(fmt.Sprintf("Main Service: Failed to load .env %v", err))
@@ -48,7 +42,7 @@ func main() {
 	userGrpcConnection, err := grpc.Dial(
 		fmt.Sprintf("%s:%s",
 			os.Getenv("GRPC_HOST"), os.Getenv("GRPC_USER_PORT"),
-		),
+		), grpc.WithInsecure(),
 	)
 	if err != nil {
 		panic(
@@ -61,7 +55,7 @@ func main() {
 	cardGrpcConnection, err := grpc.Dial(
 		fmt.Sprintf("%s:%s",
 			os.Getenv("GRPC_HOST"), os.Getenv("GRPC_CARD_PORT"),
-		),
+		), grpc.WithInsecure(),
 	)
 	if err != nil {
 		panic(
@@ -91,11 +85,10 @@ func main() {
 
 	go func() {
 		handler := gateaway.NewHTTPServer(endpoints)
-		server := &http.Server{
-			Addr:    *httpAddr,
-			Handler: handler,
-		}
-		errs <- server.ListenAndServe()
+		errs <- http.ListenAndServe(
+			fmt.Sprintf(":%s",
+				os.Getenv("HTTP_PORT"),
+			), handler)
 	}()
 
 	level.Error(logger).Log("exit", <-errs)
