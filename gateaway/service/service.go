@@ -30,7 +30,6 @@ func (s service) CreateUser(ctx context.Context, name, gender string, birthYear 
 	}
 	res, err := s.userServiceClient.Create(ctx, req)
 	if err != nil {
-		//todo handle error msg
 		return 0, err
 	}
 
@@ -53,7 +52,6 @@ func (s service) UpdateUser(ctx context.Context, userId uint, name, gender strin
 	}
 	res, err := s.userServiceClient.Update(ctx, req)
 	if err != nil {
-		//todo handle error msg
 		return err
 	}
 
@@ -70,7 +68,6 @@ func (s service) DeleteUser(ctx context.Context, userId uint) error {
 	}
 	res, err := s.userServiceClient.Delete(ctx, req)
 	if err != nil {
-		//todo handle error msg
 		return err
 	}
 
@@ -82,8 +79,41 @@ func (s service) DeleteUser(ctx context.Context, userId uint) error {
 }
 
 func (s service) GetUser(ctx context.Context, userId uint) (*endpoint.UserModel, []endpoint.BankCardModel, error) {
-	//TODO: implement getting user
-	panic("implement me")
+	reqUser := &userProto.GetRequest{
+		UserId: int32(userId),
+	}
+	resUser, err := s.userServiceClient.Get(ctx, reqUser)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	userInfo := &endpoint.UserModel{
+		UserID:    userId,
+		Name:      resUser.Info.Name,
+		Gender:    resUser.Info.Gender,
+		BirthYear: int(resUser.Info.BirthYear),
+		Avatar:    resUser.Info.Avatar,
+	}
+
+	reqCards := &cardProto.GetAllRequest{
+		UserId: int32(userId),
+	}
+	resCards, err := s.cardServiceClient.GetAll(ctx, reqCards)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var cardsResult []endpoint.BankCardModel
+	for _, card := range resCards.Cards {
+		temp := endpoint.BankCardModel{}
+		temp.CardID = uint(card.CardId)
+		temp.CardNumber = card.CardNumber
+		temp.BankName = card.BankName
+
+		cardsResult = append(cardsResult, temp)
+	}
+
+	return userInfo, cardsResult, nil
 }
 
 func (s service) CreateCard(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error) {
@@ -94,11 +124,8 @@ func (s service) CreateCard(ctx context.Context, bankName, cardNumber string, us
 	}
 	res, err := s.cardServiceClient.Create(ctx, req)
 	if err != nil {
-		//todo handle error msg
 		return 0, err
 	}
-
-	//TODO: assign card to user
 
 	if res.Success {
 		return uint(res.CardId), nil
@@ -115,7 +142,6 @@ func (s service) UpdateCard(ctx context.Context, cardId uint, bankName, cardNumb
 	}
 	res, err := s.cardServiceClient.Update(ctx, req)
 	if err != nil {
-		//todo handle error msg
 		return err
 	}
 
@@ -132,7 +158,6 @@ func (s service) DeleteCard(ctx context.Context, cardId uint) error {
 	}
 	res, err := s.cardServiceClient.Delete(ctx, req)
 	if err != nil {
-		//todo handle error msg
 		return err
 	}
 
