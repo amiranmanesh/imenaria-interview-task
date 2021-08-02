@@ -7,8 +7,8 @@ import (
 )
 
 type IService interface {
-	Create(ctx context.Context, userInfo proto.UserInfo) (uint, error)
-	Update(ctx context.Context, userId uint, userInfo proto.UserInfo) error
+	Create(ctx context.Context, userInfo *proto.UserInfo) (uint, error)
+	Update(ctx context.Context, userId uint, userInfo *proto.UserInfo) error
 	Delete(ctx context.Context, userId uint) error
 	Get(ctx context.Context, userId uint) (*proto.UserInfo, error)
 	Verify(ctx context.Context, userId uint) error
@@ -35,16 +35,16 @@ type Endpoints struct {
 func makeCreateEndpoint(s IService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(*proto.CreateRequest)
-		uid, err := s.Create(ctx, proto.UserInfo{
+		uid, err := s.Create(ctx, &proto.UserInfo{
 			Name:      req.Name,
 			Gender:    req.Gender,
 			BirthYear: req.BirthYear,
 			Avatar:    req.Avatar,
 		})
 		if err != nil {
-			return proto.CreateResponse{Success: false}, err
+			return &proto.CreateResponse{Success: false}, err
 		} else {
-			return proto.CreateResponse{
+			return &proto.CreateResponse{
 				Success: true,
 				UserId:  int32(uid),
 			}, nil
@@ -55,16 +55,16 @@ func makeCreateEndpoint(s IService) endpoint.Endpoint {
 func makeUpdateEndpoint(s IService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(*proto.UpdateRequest)
-		err := s.Update(ctx, uint(req.UserId), proto.UserInfo{
+		err := s.Update(ctx, uint(req.UserId), &proto.UserInfo{
 			Name:      req.Name,
 			Gender:    req.Gender,
 			BirthYear: req.BirthYear,
 			Avatar:    req.Avatar,
 		})
 		if err != nil {
-			return proto.UpdateResponse{Success: false}, err
+			return &proto.UpdateResponse{Success: false}, err
 		} else {
-			return proto.UpdateResponse{
+			return &proto.UpdateResponse{
 				Success: true,
 			}, nil
 		}
@@ -76,9 +76,9 @@ func makeDeleteEndpoint(s IService) endpoint.Endpoint {
 		req := request.(*proto.DeleteRequest)
 		err := s.Delete(ctx, uint(req.UserId))
 		if err != nil {
-			return proto.DeleteResponse{Success: false}, err
+			return &proto.DeleteResponse{Success: false}, err
 		} else {
-			return proto.DeleteResponse{
+			return &proto.DeleteResponse{
 				Success: true,
 			}, nil
 		}
@@ -90,9 +90,9 @@ func makeGetEndpoint(s IService) endpoint.Endpoint {
 		req := request.(*proto.GetRequest)
 		res, err := s.Get(ctx, uint(req.UserId))
 		if err != nil {
-			return proto.GetResponse{Success: false}, err
+			return &proto.GetResponse{Success: false}, err
 		} else {
-			return proto.GetResponse{
+			return &proto.GetResponse{
 				Success: true,
 				Info:    res,
 			}, nil
@@ -105,9 +105,9 @@ func makeVerifyEndpoint(s IService) endpoint.Endpoint {
 		req := request.(*proto.VerifyRequest)
 		err := s.Verify(ctx, uint(req.UserId))
 		if err != nil {
-			return proto.VerifyResponse{Success: false}, err
+			return &proto.VerifyResponse{Success: false}, err
 		} else {
-			return proto.VerifyResponse{
+			return &proto.VerifyResponse{
 				Success: true,
 			}, nil
 		}

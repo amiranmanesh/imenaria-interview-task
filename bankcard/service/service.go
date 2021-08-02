@@ -4,15 +4,16 @@ import (
 	"context"
 	"fmt"
 	"github.com/amiranmanesh/imenaria-interview-task/bankcard/endpoint"
+	"github.com/amiranmanesh/imenaria-interview-task/bankcard/proto"
 	"github.com/go-kit/kit/log"
 )
 
 type IRepository interface {
 	Create(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error)
-	Update(ctx context.Context, cardId uint, bankName, cardNumber string) error
+	Update(ctx context.Context, cardInfo *proto.CardInfo) error
 	Delete(ctx context.Context, cardId uint) error
-	Get(ctx context.Context, cardId uint) (endpoint.BankCardFullModel, error)
-	GetAll(ctx context.Context, userID uint) ([]endpoint.BankCardModel, error)
+	Get(ctx context.Context, cardId uint) (*proto.CardInfoFull, error)
+	GetAll(ctx context.Context, userID uint) ([]*proto.CardInfo, error)
 }
 
 func NewService(repository IRepository, logger log.Logger) endpoint.IService {
@@ -35,11 +36,11 @@ func (s service) Create(ctx context.Context, bankName, cardNumber string, userID
 	}
 }
 
-func (s service) Update(ctx context.Context, cardId uint, bankName, cardNumber string) error {
-	if cardNumber == "" {
-		return s.repository.Update(ctx, cardId, bankName, "")
-	} else if len(cardNumber) == 16 || len(cardNumber) == 20 {
-		return s.repository.Update(ctx, cardId, bankName, cardNumber)
+func (s service) Update(ctx context.Context, cardInfo *proto.CardInfo) error {
+	if cardInfo.CardNumber == "" {
+		return s.repository.Update(ctx, cardInfo)
+	} else if len(cardInfo.CardNumber) == 16 || len(cardInfo.CardNumber) == 20 {
+		return s.repository.Update(ctx, cardInfo)
 	} else {
 		return fmt.Errorf("card number must be 16 or 20 characters")
 	}
@@ -49,10 +50,10 @@ func (s service) Delete(ctx context.Context, cardId uint) error {
 	return s.repository.Delete(ctx, cardId)
 }
 
-func (s service) Get(ctx context.Context, cardId uint) (endpoint.BankCardFullModel, error) {
+func (s service) Get(ctx context.Context, cardId uint) (*proto.CardInfoFull, error) {
 	return s.repository.Get(ctx, cardId)
 }
 
-func (s service) GetAll(ctx context.Context, cardId uint) ([]endpoint.BankCardModel, error) {
+func (s service) GetAll(ctx context.Context, cardId uint) ([]*proto.CardInfo, error) {
 	return s.repository.GetAll(ctx, cardId)
 }

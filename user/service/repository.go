@@ -22,7 +22,7 @@ type repository struct {
 	logger log.Logger
 }
 
-func (r repository) Create(ctx context.Context, userInfo proto.UserInfo) (uint, error) {
+func (r repository) Create(ctx context.Context, userInfo *proto.UserInfo) (uint, error) {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Create")
@@ -44,7 +44,7 @@ func (r repository) Create(ctx context.Context, userInfo proto.UserInfo) (uint, 
 	return uid, nil
 }
 
-func (r repository) Update(ctx context.Context, userId uint, userInfo proto.UserInfo) error {
+func (r repository) Update(ctx context.Context, userId uint, userInfo *proto.UserInfo) error {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Update")

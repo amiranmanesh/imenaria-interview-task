@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/amiranmanesh/imenaria-interview-task/bankcard/endpoint"
+	"github.com/amiranmanesh/imenaria-interview-task/bankcard/proto"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -45,25 +45,25 @@ func (r repository) Create(ctx context.Context, bankName, cardNumber string, use
 	return cardId, nil
 }
 
-func (r repository) Update(ctx context.Context, cardId uint, bankName, cardNumber string) error {
+func (r repository) Update(ctx context.Context, cardInfo *proto.CardInfo) error {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Update")
-	logger.Log("Start updating bank card object with card id", cardId)
+	logger.Log("Start updating bank card object with card id", cardInfo.CardId)
 
 	card := &sql.BankCard{}
-	card.ID = cardId
+	card.ID = uint(cardInfo.CardId)
 
 	if err := card.Find(r.db); err != nil {
 		level.Error(logger).Log("Error is: ", err)
 		return err
 	}
 
-	if bankName != "" {
-		card.BankName = bankName
+	if cardInfo.BankName != "" {
+		card.BankName = cardInfo.BankName
 	}
-	if cardNumber != "" {
-		card.CardNumber = cardNumber
+	if cardInfo.CardNumber != "" {
+		card.CardNumber = cardInfo.CardNumber
 	}
 
 	if err := card.Update(r.db); err != nil {
@@ -71,7 +71,7 @@ func (r repository) Update(ctx context.Context, cardId uint, bankName, cardNumbe
 		return err
 	}
 
-	logger.Log("Bank Card updated successfully with card id: ", cardId)
+	logger.Log("Bank Card updated successfully with card id: ", cardInfo.CardId)
 	return nil
 }
 
@@ -94,13 +94,13 @@ func (r repository) Delete(ctx context.Context, cardId uint) error {
 
 }
 
-func (r repository) Get(ctx context.Context, cardId uint) (endpoint.BankCardFullModel, error) {
+func (r repository) Get(ctx context.Context, cardId uint) (*proto.CardInfoFull, error) {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Get Card Info By Card ID")
 	logger.Log("Start getting bank card object with card id %d", cardId)
 
-	cardInfo := endpoint.BankCardFullModel{}
+	cardInfo := &proto.CardInfoFull{}
 
 	card := &sql.BankCard{}
 	card.ID = cardId
@@ -110,8 +110,8 @@ func (r repository) Get(ctx context.Context, cardId uint) (endpoint.BankCardFull
 		return cardInfo, err
 	}
 
-	cardInfo.CardID = card.ID
-	cardInfo.UserID = card.UserID
+	cardInfo.CardId = int32(card.ID)
+	cardInfo.UserId = int32(card.UserID)
 	cardInfo.BankName = card.BankName
 	cardInfo.CardNumber = card.CardNumber
 
@@ -119,7 +119,7 @@ func (r repository) Get(ctx context.Context, cardId uint) (endpoint.BankCardFull
 	return cardInfo, nil
 }
 
-func (r repository) GetAll(ctx context.Context, userId uint) ([]endpoint.BankCardModel, error) {
+func (r repository) GetAll(ctx context.Context, userId uint) ([]*proto.CardInfo, error) {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Get all cards")
@@ -134,11 +134,11 @@ func (r repository) GetAll(ctx context.Context, userId uint) ([]endpoint.BankCar
 		return nil, err
 	}
 
-	var result []endpoint.BankCardModel
+	var result []*proto.CardInfo
 
 	for _, card := range cards {
-		temp := endpoint.BankCardModel{}
-		temp.CardID = card.ID
+		temp := &proto.CardInfo{}
+		temp.CardId = int32(card.ID)
 		temp.CardNumber = card.CardNumber
 		temp.BankName = card.BankName
 

@@ -9,8 +9,8 @@ import (
 )
 
 type IRepository interface {
-	Create(ctx context.Context, userInfo proto.UserInfo) (uint, error)
-	Update(ctx context.Context, userId uint, userInfo proto.UserInfo) error
+	Create(ctx context.Context, userInfo *proto.UserInfo) (uint, error)
+	Update(ctx context.Context, userId uint, userInfo *proto.UserInfo) error
 	Delete(ctx context.Context, userId uint) error
 	Get(ctx context.Context, userId uint) (*proto.UserInfo, error)
 	Verify(ctx context.Context, userId uint) error
@@ -25,7 +25,7 @@ type service struct {
 	logger     log.Logger
 }
 
-func (s service) Create(ctx context.Context, userInfo proto.UserInfo) (uint, error) {
+func (s service) Create(ctx context.Context, userInfo *proto.UserInfo) (uint, error) {
 	if userInfo.Name == "" {
 		return 0, fmt.Errorf("name can not be empty")
 	}
@@ -38,7 +38,7 @@ func (s service) Create(ctx context.Context, userInfo proto.UserInfo) (uint, err
 	return s.repository.Create(ctx, userInfo)
 }
 
-func (s service) Update(ctx context.Context, userId uint, userInfo proto.UserInfo) error {
+func (s service) Update(ctx context.Context, userId uint, userInfo *proto.UserInfo) error {
 	return s.repository.Update(ctx, userId, userInfo)
 }
 

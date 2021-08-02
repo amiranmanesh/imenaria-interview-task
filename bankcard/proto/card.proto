@@ -42,10 +42,14 @@ message DeleteResponse {
 
 message GetResponse {
     bool success = 1;
-    int32 cardId = 2;
-    string bankName = 3;
-    string cardNumber = 4;
-    int32 userId = 5;
+    CardInfoFull CardInfo = 2;
+}
+
+message CardInfoFull {
+    int32 cardId = 1;
+    string bankName = 2;
+    string cardNumber = 3;
+    int32 userId = 4;
 }
 
 message CardInfo {

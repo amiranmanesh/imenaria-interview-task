@@ -195,10 +195,10 @@ func (s service) GetCard(ctx context.Context, cardId uint) (*endpoint.BankCardFu
 	}
 
 	resModel := &endpoint.BankCardFullModel{
-		CardID:     uint(res.CardId),
-		BankName:   res.BankName,
-		CardNumber: res.CardNumber,
-		UserID:     uint(res.UserId),
+		CardID:     uint(res.CardInfo.CardId),
+		BankName:   res.CardInfo.BankName,
+		CardNumber: res.CardInfo.CardNumber,
+		UserID:     uint(res.CardInfo.UserId),
 	}
 
 	if res.Success {

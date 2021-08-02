@@ -6,11 +6,7 @@ import (
 )
 
 func EncodeCreateResponse(ctx context.Context, response interface{}) (interface{}, error) {
-	res := response.(proto.CreateResponse)
-	return &proto.CreateResponse{
-		Success: res.Success,
-		UserId:  res.UserId,
-	}, nil
+	return response.(*proto.CreateResponse), nil
 }
 
 func DecodeCreateRequest(ctx context.Context, request interface{}) (interface{}, error) {
