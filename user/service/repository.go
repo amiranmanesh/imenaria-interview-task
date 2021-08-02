@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"github.com/amiranmanesh/imenaria-interview-task/db/sql"
-	"github.com/amiranmanesh/imenaria-interview-task/user/endpoint"
+	"github.com/amiranmanesh/imenaria-interview-task/user/proto"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"gorm.io/gorm"
@@ -22,17 +22,17 @@ type repository struct {
 	logger log.Logger
 }
 
-func (r repository) Create(ctx context.Context, name, gender string, birthYear int, avatar string) (uint, error) {
+func (r repository) Create(ctx context.Context, userInfo proto.UserInfo) (uint, error) {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Create")
 	logger.Log("Start creating user object")
 
 	user := &sql.User{}
-	user.Name = name
-	user.Gender = gender
-	user.BirthYear = birthYear
-	user.Avatar = avatar
+	user.Name = userInfo.Name
+	user.Gender = userInfo.Gender
+	user.BirthYear = int(userInfo.BirthYear)
+	user.Avatar = userInfo.Avatar
 
 	uid, err := user.Save(r.db)
 	if err != nil {
@@ -44,7 +44,7 @@ func (r repository) Create(ctx context.Context, name, gender string, birthYear i
 	return uid, nil
 }
 
-func (r repository) Update(ctx context.Context, userId uint, name, gender string, birthYear int, avatar string) error {
+func (r repository) Update(ctx context.Context, userId uint, userInfo proto.UserInfo) error {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Update")
@@ -58,17 +58,17 @@ func (r repository) Update(ctx context.Context, userId uint, name, gender string
 		return err
 	}
 
-	if name != "" {
-		user.Name = name
+	if userInfo.Name != "" {
+		user.Name = userInfo.Name
 	}
-	if gender != "" {
-		user.Gender = gender
+	if userInfo.Gender != "" {
+		user.Gender = userInfo.Gender
 	}
-	if birthYear != 0 {
-		user.BirthYear = birthYear
+	if userInfo.BirthYear != 0 {
+		user.BirthYear = int(userInfo.BirthYear)
 	}
-	if avatar != "" {
-		user.Avatar = avatar
+	if userInfo.Avatar != "" {
+		user.Avatar = userInfo.Avatar
 	}
 
 	if err := user.Update(r.db); err != nil {
@@ -98,13 +98,13 @@ func (r repository) Delete(ctx context.Context, userId uint) error {
 	return nil
 }
 
-func (r repository) Get(ctx context.Context, userId uint) (endpoint.UserModel, error) {
+func (r repository) Get(ctx context.Context, userId uint) (*proto.UserInfo, error) {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Get")
 	logger.Log("Start getting user object with user id: ", userId)
 
-	userInfo := endpoint.UserModel{}
+	userInfo := &proto.UserInfo{}
 
 	user := &sql.User{}
 	user.ID = userId
@@ -114,10 +114,9 @@ func (r repository) Get(ctx context.Context, userId uint) (endpoint.UserModel, e
 		return userInfo, err
 	}
 
-	userInfo.UserID = user.ID
 	userInfo.Name = user.Name
 	userInfo.Gender = user.Gender
-	userInfo.BirthYear = user.BirthYear
+	userInfo.BirthYear = int32(user.BirthYear)
 	userInfo.Avatar = user.Avatar
 
 	logger.Log("User found")

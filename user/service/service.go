@@ -4,14 +4,15 @@ import (
 	"context"
 	"fmt"
 	"github.com/amiranmanesh/imenaria-interview-task/user/endpoint"
+	"github.com/amiranmanesh/imenaria-interview-task/user/proto"
 	"github.com/go-kit/kit/log"
 )
 
 type IRepository interface {
-	Create(ctx context.Context, name, gender string, birthYear int, avatar string) (uint, error)
-	Update(ctx context.Context, userId uint, name, gender string, birthYear int, avatar string) error
+	Create(ctx context.Context, userInfo proto.UserInfo) (uint, error)
+	Update(ctx context.Context, userId uint, userInfo proto.UserInfo) error
 	Delete(ctx context.Context, userId uint) error
-	Get(ctx context.Context, userId uint) (endpoint.UserModel, error)
+	Get(ctx context.Context, userId uint) (*proto.UserInfo, error)
 	Verify(ctx context.Context, userId uint) error
 }
 
@@ -24,28 +25,28 @@ type service struct {
 	logger     log.Logger
 }
 
-func (s service) Create(ctx context.Context, name, gender string, birthYear int, avatar string) (uint, error) {
-	if name == "" {
+func (s service) Create(ctx context.Context, userInfo proto.UserInfo) (uint, error) {
+	if userInfo.Name == "" {
 		return 0, fmt.Errorf("name can not be empty")
 	}
-	if gender == "" {
+	if userInfo.Gender == "" {
 		return 0, fmt.Errorf("gender can not be empty")
 	}
-	if birthYear <= 1000 && birthYear >= 9999 {
+	if userInfo.BirthYear <= 1000 && userInfo.BirthYear >= 9999 {
 		return 0, fmt.Errorf("birth year is out of range")
 	}
-	return s.repository.Create(ctx, name, gender, birthYear, avatar)
+	return s.repository.Create(ctx, userInfo)
 }
 
-func (s service) Update(ctx context.Context, userId uint, name, gender string, birthYear int, avatar string) error {
-	return s.repository.Update(ctx, userId, name, gender, birthYear, avatar)
+func (s service) Update(ctx context.Context, userId uint, userInfo proto.UserInfo) error {
+	return s.repository.Update(ctx, userId, userInfo)
 }
 
 func (s service) Delete(ctx context.Context, userId uint) error {
 	return s.repository.Delete(ctx, userId)
 }
 
-func (s service) Get(ctx context.Context, userId uint) (endpoint.UserModel, error) {
+func (s service) Get(ctx context.Context, userId uint) (*proto.UserInfo, error) {
 	return s.repository.Get(ctx, userId)
 }
 
