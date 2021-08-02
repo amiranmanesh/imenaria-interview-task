@@ -99,6 +99,11 @@ type (
 )
 
 func EncodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+	switch response.(type) {
+	case ErrorResponse:
+		w.WriteHeader(400)
+	}
+	w.Header().Add("Content-Type", "application/json")
 	return json.NewEncoder(w).Encode(response)
 }
 
