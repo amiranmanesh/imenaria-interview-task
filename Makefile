@@ -1,6 +1,4 @@
-build:
-	go build
-run:
+run_main:
 	go run ./main.go
 run_user:
 	go run ./user/main.go
