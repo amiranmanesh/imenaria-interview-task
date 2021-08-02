@@ -91,6 +91,11 @@ type (
 		Success  bool              `json:"success"`
 		CardInfo BankCardFullModel `json:"card_info"`
 	}
+
+	ErrorResponse struct {
+		Success bool   `json:"success"`
+		Error   string `json:"error"`
+	}
 )
 
 func EncodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {

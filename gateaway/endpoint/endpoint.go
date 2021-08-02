@@ -45,7 +45,7 @@ func makeCreateUserEndpoint(s IService) endpoint.Endpoint {
 		req := request.(CreateUserRequest)
 		uid, err := s.CreateUser(ctx, req.Name, req.Gender, req.BirthYear, req.Avatar)
 		if err != nil {
-			return CreateUserResponse{Success: false}, err
+			return ErrorResponse{Success: false, Error: err.Error()}, nil
 		} else {
 			return CreateUserResponse{
 				Success: true,
@@ -60,7 +60,7 @@ func makeUpdateUserEndpoint(s IService) endpoint.Endpoint {
 		req := request.(UpdateUserRequest)
 		err := s.UpdateUser(ctx, req.UserID, req.Name, req.Gender, req.BirthYear, req.Avatar)
 		if err != nil {
-			return UpdateUserResponse{Success: false}, err
+			return ErrorResponse{Success: false, Error: err.Error()}, nil
 		} else {
 			return UpdateUserResponse{
 				Success: true,
@@ -74,7 +74,7 @@ func makeDeleteUserEndpoint(s IService) endpoint.Endpoint {
 		req := request.(DeleteUserRequest)
 		err := s.DeleteUser(ctx, req.UserID)
 		if err != nil {
-			return DeleteUserResponse{Success: false}, err
+			return ErrorResponse{Success: false, Error: err.Error()}, nil
 		} else {
 			return DeleteUserResponse{
 				Success: true,
@@ -88,7 +88,7 @@ func makeGetUserEndpoint(s IService) endpoint.Endpoint {
 		req := request.(GetUserRequest)
 		userInfo, cards, err := s.GetUser(ctx, req.UserID)
 		if err != nil {
-			return GetUserResponse{Success: false}, err
+			return ErrorResponse{Success: false, Error: err.Error()}, nil
 		} else {
 			return GetUserResponse{
 				Success:   true,
@@ -104,7 +104,7 @@ func makeCreateCardEndpoint(s IService) endpoint.Endpoint {
 		req := request.(CreateCardRequest)
 		cid, err := s.CreateCard(ctx, req.BankName, req.CardNumber, req.UserID)
 		if err != nil {
-			return CreateCardResponse{Success: false}, err
+			return ErrorResponse{Success: false, Error: err.Error()}, nil
 		} else {
 			return CreateCardResponse{
 				Success: true,
@@ -119,7 +119,7 @@ func makeUpdateCardEndpoint(s IService) endpoint.Endpoint {
 		req := request.(UpdateCardRequest)
 		err := s.UpdateCard(ctx, req.CardID, req.BankName, req.CardNumber)
 		if err != nil {
-			return UpdateCardResponse{Success: false}, err
+			return ErrorResponse{Success: false, Error: err.Error()}, nil
 		} else {
 			return UpdateCardResponse{
 				Success: true,
@@ -133,7 +133,7 @@ func makeDeleteCardEndpoint(s IService) endpoint.Endpoint {
 		req := request.(DeleteCardRequest)
 		err := s.DeleteCard(ctx, req.CardID)
 		if err != nil {
-			return DeleteCardResponse{Success: false}, err
+			return ErrorResponse{Success: false, Error: err.Error()}, nil
 		} else {
 			return DeleteCardResponse{
 				Success: true,
@@ -147,7 +147,7 @@ func makeGetCardEndpoint(s IService) endpoint.Endpoint {
 		req := request.(GetCardRequest)
 		res, err := s.GetCard(ctx, req.CardID)
 		if err != nil {
-			return GetCardResponse{Success: false}, err
+			return ErrorResponse{Success: false, Error: err.Error()}, nil
 		} else {
 			return GetCardResponse{
 				Success:  true,
