@@ -9,7 +9,6 @@ var userCreatingFailedError = errors.New("creating user failed")
 var userUpdatingFailedError = errors.New("updating user failed")
 var userDeletingFailedError = errors.New("deleting user failed")
 var userNotFoundError = errors.New("user not found")
-var userAssignCardError = errors.New("assign card failed")
 
 type User struct {
 	gorm.Model
@@ -17,7 +16,6 @@ type User struct {
 	Gender    string `gorm:"type:varchar(20);not null;" json:"gender"`
 	BirthYear int    `gorm:"not null;" json:"birth_year"`
 	Avatar    string `gorm:"type:varchar(200);" json:"avatar"`
-	BankCards []BankCard
 }
 
 func (u *User) Save(db *gorm.DB) (uint, error) {
@@ -45,13 +43,6 @@ func (u *User) Update(db *gorm.DB) error {
 func (u *User) Delete(db *gorm.DB) error {
 	if result := db.Delete(&u); result.Error != nil {
 		return userDeletingFailedError
-	}
-	return nil
-}
-
-func (u *User) AssignCard(db *gorm.DB, card *BankCard) error {
-	if result := db.Model(*u).Association("BankCard").Append(&card); result.Error != nil {
-		return userAssignCardError
 	}
 	return nil
 }

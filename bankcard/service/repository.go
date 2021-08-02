@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/amiranmanesh/imenaria-interview-task/bankcard/endpoint"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -93,21 +94,22 @@ func (r repository) Delete(ctx context.Context, cardId uint) error {
 
 }
 
-func (r repository) Get(ctx context.Context, cardId uint) (*BankCardModel, error) {
+func (r repository) Get(ctx context.Context, cardId uint) (endpoint.BankCardFullModel, error) {
 	//TODO: handle ctx
 
 	logger := log.With(r.logger, "Get Card Info By Card ID")
 	logger.Log("Start getting bank card object with card id %d", cardId)
+
+	cardInfo := endpoint.BankCardFullModel{}
 
 	card := &sql.BankCard{}
 	card.ID = cardId
 
 	if err := card.Find(r.db); err != nil {
 		level.Error(logger).Log("Error is: ", err)
-		return nil, err
+		return cardInfo, err
 	}
 
-	cardInfo := &BankCardModel{}
 	cardInfo.CardID = card.ID
 	cardInfo.UserID = card.UserID
 	cardInfo.BankName = card.BankName
@@ -117,32 +119,31 @@ func (r repository) Get(ctx context.Context, cardId uint) (*BankCardModel, error
 	return cardInfo, nil
 }
 
-//func (r repository) GetCardsByUserID(ctx context.Context, userId uint) ([]*BankCardModel, error) {
-//	//TODO: handle ctx
-//
-//	logger := log.With(r.logger, "Get Cards Info By User ID")
-//	logger.Log("Start finding bank card objects with user id %d", userId)
-//
-//	card := sql.BankCard{}
-//	cards, err := card.GetAllByUserID(r.db)
-//
-//	if err != nil {
-//		level.Error(logger).Log("Error is: ", err)
-//		return nil, err
-//	}
-//
-//	var result []*BankCardModel
-//
-//	for _, card := range cards {
-//		temp := &BankCardModel{}
-//		temp.UserID = userId
-//		temp.CardID = card.ID
-//		temp.CardNumber = card.CardNumber
-//		temp.BankName = card.BankName
-//
-//		result = append(result, temp)
-//	}
-//
-//	logger.Log("Found ", len(result), " Items")
-//	return result, nil
-//}
+func (r repository) GetAll(ctx context.Context, userId uint) ([]endpoint.BankCardModel, error) {
+	//TODO: handle ctx
+
+	logger := log.With(r.logger, "Get all cards")
+	logger.Log("Start finding bank card objects with user id %d", userId)
+
+	card := sql.BankCard{}
+	cards, err := card.GetAllByUserID(r.db)
+
+	if err != nil {
+		level.Error(logger).Log("Error is: ", err)
+		return nil, err
+	}
+
+	var result []endpoint.BankCardModel
+
+	for _, card := range cards {
+		temp := endpoint.BankCardModel{}
+		temp.CardID = card.ID
+		temp.CardNumber = card.CardNumber
+		temp.BankName = card.BankName
+
+		result = append(result, temp)
+	}
+
+	logger.Log("Found ", len(result), " Items")
+	return result, nil
+}

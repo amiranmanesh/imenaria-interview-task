@@ -6,6 +6,18 @@ import (
 )
 
 type (
+	BankCardModel struct {
+		CardID     uint   `json:"card_id"`
+		BankName   string `json:"bank_name"`
+		CardNumber string `json:"card_number"`
+	}
+	BankCardFullModel struct {
+		CardID     uint   `json:"card_id"`
+		BankName   string `json:"bank_name"`
+		CardNumber string `json:"card_number"`
+		UserID     uint   `json:"user_id"`
+	}
+
 	CreateRequest struct {
 		BankName   string `json:"bank_name"`
 		CardNumber string `json:"card_number"`
@@ -33,11 +45,16 @@ type (
 		CardID uint `json:"card_id"`
 	}
 	GetResponse struct {
-		Success    bool   `json:"success"`
-		CardID     uint   `json:"card_id"`
-		BankName   string `json:"bank_name"`
-		CardNumber string `json:"card_number"`
-		UserID     uint   `json:"user_id"`
+		Success  bool              `json:"success"`
+		CardInfo BankCardFullModel `json:"card_info"`
+	}
+	GetAllRequest struct {
+		UserID uint `json:"user_id"`
+	}
+	GetAllResponse struct {
+		Success bool            `json:"success"`
+		UserID  uint            `json:"user_id"`
+		Cards   []BankCardModel `json:"cards"`
 	}
 )
 
@@ -92,10 +109,10 @@ func EncodeGetResponse(ctx context.Context, response interface{}) (interface{}, 
 	res := response.(GetResponse)
 	return &proto.GetResponse{
 		Success:    res.Success,
-		CardId:     int32(res.CardID),
-		BankName:   res.BankName,
-		CardNumber: res.CardNumber,
-		UserId:     int32(res.UserID),
+		CardId:     int32(res.CardInfo.CardID),
+		BankName:   res.CardInfo.BankName,
+		CardNumber: res.CardInfo.CardNumber,
+		UserId:     int32(res.CardInfo.UserID),
 	}, nil
 }
 
@@ -103,5 +120,29 @@ func DecodeGetRequest(ctx context.Context, request interface{}) (interface{}, er
 	req := request.(*proto.GetRequest)
 	return GetRequest{
 		CardID: uint(req.CardId),
+	}, nil
+}
+
+func EncodeGetAllResponse(ctx context.Context, response interface{}) (interface{}, error) {
+	res := response.(GetAllResponse)
+	var items []*proto.CardInfo
+	for _, card := range res.Cards {
+		items = append(items, &proto.CardInfo{
+			CardId:     int32(card.CardID),
+			BankName:   card.BankName,
+			CardNumber: card.CardNumber,
+		})
+	}
+	return &proto.GetAllResponse{
+		Success: res.Success,
+		UserId:  int32(res.UserID),
+		Cards:   items,
+	}, nil
+}
+
+func DecodeGetAllRequest(ctx context.Context, request interface{}) (interface{}, error) {
+	req := request.(*proto.GetAllRequest)
+	return GetAllRequest{
+		UserID: uint(req.UserId),
 	}, nil
 }

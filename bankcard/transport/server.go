@@ -12,6 +12,7 @@ type grpcServer struct {
 	updateHandler grpctransport.Handler
 	deleteHandler grpctransport.Handler
 	getHandler    grpctransport.Handler
+	getAllHandler grpctransport.Handler
 }
 
 func NewGRPCServer(ctx context.Context, endpoints endpoint.Endpoints) proto.CardServiceServer {
@@ -35,6 +36,11 @@ func NewGRPCServer(ctx context.Context, endpoints endpoint.Endpoints) proto.Card
 			endpoints.Get,
 			endpoint.DecodeGetRequest,
 			endpoint.EncodeGetResponse,
+		),
+		getAllHandler: grpctransport.NewServer(
+			endpoints.GetAll,
+			endpoint.DecodeGetAllRequest,
+			endpoint.EncodeGetAllResponse,
 		),
 	}
 }
@@ -69,4 +75,12 @@ func (g *grpcServer) Get(ctx context.Context, request *proto.GetRequest) (*proto
 		return nil, err
 	}
 	return response.(*proto.GetResponse), nil
+}
+
+func (g *grpcServer) GetAll(ctx context.Context, request *proto.GetAllRequest) (*proto.GetAllResponse, error) {
+	_, response, err := g.getAllHandler.ServeGRPC(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.(*proto.GetAllResponse), nil
 }

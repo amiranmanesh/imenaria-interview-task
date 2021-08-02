@@ -9,7 +9,8 @@ type IService interface {
 	Create(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error)
 	Update(ctx context.Context, cardId uint, bankName, cardNumber string) error
 	Delete(ctx context.Context, cardId uint) error
-	Get(ctx context.Context, cardId uint) (uint, string, string, uint, error)
+	Get(ctx context.Context, cardId uint) (BankCardFullModel, error)
+	GetAll(ctx context.Context, userID uint) ([]BankCardModel, error)
 }
 
 func MakeEndpoint(s IService) Endpoints {
@@ -18,6 +19,7 @@ func MakeEndpoint(s IService) Endpoints {
 		Update: makeUpdateEndpoint(s),
 		Delete: makeDeleteEndpoint(s),
 		Get:    makeGetEndpoint(s),
+		GetAll: makeGetAllEndpoint(s),
 	}
 }
 
@@ -26,6 +28,7 @@ type Endpoints struct {
 	Update endpoint.Endpoint
 	Delete endpoint.Endpoint
 	Get    endpoint.Endpoint
+	GetAll endpoint.Endpoint
 }
 
 func makeCreateEndpoint(s IService) endpoint.Endpoint {
@@ -74,16 +77,29 @@ func makeDeleteEndpoint(s IService) endpoint.Endpoint {
 func makeGetEndpoint(s IService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetRequest)
-		cardID, bankName, cardNumber, userID, err := s.Get(ctx, req.CardID)
+		res, err := s.Get(ctx, req.CardID)
 		if err != nil {
 			return GetResponse{Success: false}, err
 		} else {
 			return GetResponse{
-				Success:    true,
-				CardID:     cardID,
-				BankName:   bankName,
-				CardNumber: cardNumber,
-				UserID:     userID,
+				Success:  true,
+				CardInfo: res,
+			}, nil
+		}
+	}
+}
+
+func makeGetAllEndpoint(s IService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetAllRequest)
+		res, err := s.GetAll(ctx, req.UserID)
+		if err != nil {
+			return GetAllResponse{Success: false}, err
+		} else {
+			return GetAllResponse{
+				Success: true,
+				UserID:  req.UserID,
+				Cards:   res,
 			}, nil
 		}
 	}

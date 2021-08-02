@@ -23,6 +23,10 @@ message GetRequest {
     int32 cardId = 1;
 }
 
+message GetAllRequest {
+    int32 userId = 1;
+}
+
 message CreateResponse {
     bool success = 1;
     int32 cardId = 2;
@@ -44,9 +48,22 @@ message GetResponse {
     int32 userId = 5;
 }
 
+message CardInfo {
+    int32 cardId = 1;
+    string bankName = 2;
+    string cardNumber = 3;
+}
+
+message GetAllResponse {
+    bool success = 1;
+    int32 userId = 2;
+    repeated CardInfo cards = 3;
+}
+
 service CardService {
     rpc Create(CreateRequest) returns (CreateResponse) {};
     rpc Update(UpdateRequest) returns (UpdateResponse) {};
     rpc Delete(DeleteRequest) returns (DeleteResponse) {};
     rpc Get(GetRequest) returns (GetResponse) {};
+    rpc GetAll(GetAllRequest) returns (GetAllResponse) {};
 }
