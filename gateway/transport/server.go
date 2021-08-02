@@ -1,7 +1,7 @@
 package transport
 
 import (
-	"github.com/amiranmanesh/imenaria-interview-task/gateaway/endpoint"
+	"github.com/amiranmanesh/imenaria-interview-task/gateway/endpoint"
 	"github.com/gin-gonic/gin"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"net/http"

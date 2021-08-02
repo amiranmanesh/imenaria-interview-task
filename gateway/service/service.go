@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	cardProto "github.com/amiranmanesh/imenaria-interview-task/bankcard/proto"
-	"github.com/amiranmanesh/imenaria-interview-task/gateaway/endpoint"
+	"github.com/amiranmanesh/imenaria-interview-task/gateway/endpoint"
 	userProto "github.com/amiranmanesh/imenaria-interview-task/user/proto"
 	"github.com/amiranmanesh/imenaria-interview-task/utils/files"
 	"github.com/go-kit/kit/log"
