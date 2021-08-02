@@ -6,7 +6,9 @@ import (
 	cardProto "github.com/amiranmanesh/imenaria-interview-task/bankcard/proto"
 	"github.com/amiranmanesh/imenaria-interview-task/gateaway/endpoint"
 	userProto "github.com/amiranmanesh/imenaria-interview-task/user/proto"
+	"github.com/amiranmanesh/imenaria-interview-task/utils/files"
 	"github.com/go-kit/kit/log"
+	"mime/multipart"
 )
 
 func NewService(userServiceClient userProto.UserServiceClient, cardServiceClient cardProto.CardServiceClient, logger log.Logger) endpoint.IService {
@@ -114,6 +116,10 @@ func (s service) GetUser(ctx context.Context, userId uint) (*endpoint.UserModel,
 	}
 
 	return userInfo, cardsResult, nil
+}
+
+func (s service) UploadAvatar(ctx context.Context, file multipart.File, multipartFileHeader *multipart.FileHeader) (string, error) {
+	return files.FilesHandler.Save(file, multipartFileHeader)
 }
 
 func (s service) CreateCard(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error) {

@@ -3,6 +3,7 @@ package endpoint
 import (
 	"context"
 	"github.com/go-kit/kit/endpoint"
+	"mime/multipart"
 )
 
 type IService interface {
@@ -10,6 +11,7 @@ type IService interface {
 	UpdateUser(ctx context.Context, userId uint, name, gender string, birthYear int, avatar string) error
 	DeleteUser(ctx context.Context, userId uint) error
 	GetUser(ctx context.Context, userId uint) (*UserModel, []BankCardModel, error)
+	UploadAvatar(ctx context.Context, file multipart.File, multipartFileHeader *multipart.FileHeader) (string, error)
 	CreateCard(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error)
 	UpdateCard(ctx context.Context, cardId uint, bankName, cardNumber string) error
 	DeleteCard(ctx context.Context, cardId uint) error
@@ -18,26 +20,28 @@ type IService interface {
 
 func MakeEndpoint(s IService) Endpoints {
 	return Endpoints{
-		CreateUser: makeCreateUserEndpoint(s),
-		UpdateUser: makeUpdateUserEndpoint(s),
-		DeleteUser: makeDeleteUserEndpoint(s),
-		GetUser:    makeGetUserEndpoint(s),
-		CreateCard: makeCreateCardEndpoint(s),
-		UpdateCard: makeUpdateCardEndpoint(s),
-		DeleteCard: makeDeleteCardEndpoint(s),
-		GetCard:    makeGetCardEndpoint(s),
+		CreateUser:   makeCreateUserEndpoint(s),
+		UpdateUser:   makeUpdateUserEndpoint(s),
+		DeleteUser:   makeDeleteUserEndpoint(s),
+		GetUser:      makeGetUserEndpoint(s),
+		UploadAvatar: makeUploadAvatarEndpoint(s),
+		CreateCard:   makeCreateCardEndpoint(s),
+		UpdateCard:   makeUpdateCardEndpoint(s),
+		DeleteCard:   makeDeleteCardEndpoint(s),
+		GetCard:      makeGetCardEndpoint(s),
 	}
 }
 
 type Endpoints struct {
-	CreateUser endpoint.Endpoint
-	UpdateUser endpoint.Endpoint
-	DeleteUser endpoint.Endpoint
-	GetUser    endpoint.Endpoint
-	CreateCard endpoint.Endpoint
-	UpdateCard endpoint.Endpoint
-	DeleteCard endpoint.Endpoint
-	GetCard    endpoint.Endpoint
+	CreateUser   endpoint.Endpoint
+	UpdateUser   endpoint.Endpoint
+	DeleteUser   endpoint.Endpoint
+	GetUser      endpoint.Endpoint
+	UploadAvatar endpoint.Endpoint
+	CreateCard   endpoint.Endpoint
+	UpdateCard   endpoint.Endpoint
+	DeleteCard   endpoint.Endpoint
+	GetCard      endpoint.Endpoint
 }
 
 func makeCreateUserEndpoint(s IService) endpoint.Endpoint {
@@ -94,6 +98,21 @@ func makeGetUserEndpoint(s IService) endpoint.Endpoint {
 				Success:   true,
 				UserInfo:  *userInfo,
 				BankCards: cards,
+			}, nil
+		}
+	}
+}
+
+func makeUploadAvatarEndpoint(s IService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UploadAvatarRequest)
+		fileCode, err := s.UploadAvatar(ctx, req.File, req.MultipartFileHeader)
+		if err != nil {
+			return ErrorResponse{Success: false, Error: err.Error()}, nil
+		} else {
+			return UploadAvatarResponse{
+				Success:  true,
+				FileCode: fileCode,
 			}, nil
 		}
 	}

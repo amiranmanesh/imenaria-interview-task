@@ -33,6 +33,11 @@ func NewHTTPServer(endpoints endpoint.Endpoints) http.Handler {
 			endpoint.DecodeDeleteUserReq,
 			endpoint.EncodeResponse,
 		)))
+		user.POST("/upload", gin.WrapH(httptransport.NewServer(
+			endpoints.UploadAvatar,
+			endpoint.DecodeUploadAvatarReq,
+			endpoint.EncodeResponse,
+		)))
 	}
 
 	card := router.Group("/card")

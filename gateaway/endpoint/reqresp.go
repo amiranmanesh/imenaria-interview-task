@@ -3,6 +3,7 @@ package endpoint
 import (
 	"context"
 	"encoding/json"
+	"mime/multipart"
 	"net/http"
 	"strconv"
 )
@@ -60,6 +61,15 @@ type (
 		Success   bool            `json:"success"`
 		UserInfo  UserModel       `json:"user_info"`
 		BankCards []BankCardModel `json:"user_cards"`
+	}
+
+	UploadAvatarRequest struct {
+		File                multipart.File        `json:"_"`
+		MultipartFileHeader *multipart.FileHeader `json:"_"`
+	}
+	UploadAvatarResponse struct {
+		Success  bool   `json:"success"`
+		FileCode string `json:"file_code"`
 	}
 
 	CreateCardRequest struct {
@@ -142,6 +152,18 @@ func DecodeGetUserReq(ctx context.Context, r *http.Request) (interface{}, error)
 	}
 	var req GetUserRequest
 	req.UserID = uint(userId)
+	return req, nil
+}
+
+func DecodeUploadAvatarReq(ctx context.Context, r *http.Request) (interface{}, error) {
+	f, fh, err := r.FormFile("avatar")
+	if err != nil {
+		return nil, err
+	}
+	req := UploadAvatarRequest{
+		File:                f,
+		MultipartFileHeader: fh,
+	}
 	return req, nil
 }
 
