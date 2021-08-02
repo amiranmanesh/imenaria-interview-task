@@ -31,10 +31,13 @@ type service struct {
 }
 
 func (s service) Create(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error) {
+	if bankName == "" {
+		return 0, fmt.Errorf("bank name can not be empty")
+	}
 	if len(cardNumber) == 16 || len(cardNumber) == 20 {
 		return s.repository.Create(ctx, bankName, cardNumber, userID)
 	} else {
-		return 0, fmt.Errorf("card number must be 16 or 20")
+		return 0, fmt.Errorf("card number must be 16 or 20 characters")
 	}
 }
 
@@ -44,7 +47,7 @@ func (s service) Update(ctx context.Context, cardId uint, bankName, cardNumber s
 	} else if len(cardNumber) == 16 || len(cardNumber) == 20 {
 		return s.repository.Update(ctx, cardId, bankName, cardNumber)
 	} else {
-		return fmt.Errorf("card number must be 16 or 20")
+		return fmt.Errorf("card number must be 16 or 20 characters")
 	}
 }
 
