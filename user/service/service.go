@@ -11,6 +11,7 @@ type IRepository interface {
 	Create(ctx context.Context, name, gender string, birthYear int, avatar string) (uint, error)
 	Update(ctx context.Context, userId uint, name, gender string, birthYear int, avatar string) error
 	Delete(ctx context.Context, userId uint) error
+	Get(ctx context.Context, userId uint) (endpoint.UserModel, error)
 	Verify(ctx context.Context, userId uint) error
 }
 
@@ -42,6 +43,10 @@ func (s service) Update(ctx context.Context, userId uint, name, gender string, b
 
 func (s service) Delete(ctx context.Context, userId uint) error {
 	return s.repository.Delete(ctx, userId)
+}
+
+func (s service) Get(ctx context.Context, userId uint) (endpoint.UserModel, error) {
+	return s.repository.Get(ctx, userId)
 }
 
 func (s service) Verify(ctx context.Context, userId uint) error {

@@ -22,6 +22,10 @@ message DeleteRequest {
     int32 userId = 1;
 }
 
+message GetRequest {
+    int32 userId = 1;
+}
+
 message VerifyRequest {
     int32 userId = 1;
 }
@@ -38,6 +42,19 @@ message UpdateResponse {
 message DeleteResponse {
     bool success = 1;
 }
+
+message UserInfo {
+    string name = 1;
+    string gender = 2;
+    int32 birthYear = 3;
+    string avatar = 4;
+}
+
+message GetResponse {
+    bool success = 1;
+    UserInfo info = 2;
+}
+
 message VerifyResponse {
     bool success = 1;
 }
@@ -46,5 +63,6 @@ service UserService {
     rpc Create(CreateRequest) returns (CreateResponse) {};
     rpc Update(UpdateRequest) returns (UpdateResponse) {};
     rpc Delete(DeleteRequest) returns (DeleteResponse) {};
+    rpc Get(GetRequest) returns (GetResponse) {};
     rpc Verify(VerifyRequest) returns (VerifyResponse) {};
 }

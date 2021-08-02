@@ -9,6 +9,7 @@ type IService interface {
 	Create(ctx context.Context, name, gender string, birthYear int, avatar string) (uint, error)
 	Update(ctx context.Context, userId uint, name, gender string, birthYear int, avatar string) error
 	Delete(ctx context.Context, userId uint) error
+	Get(ctx context.Context, userId uint) (UserModel, error)
 	Verify(ctx context.Context, userId uint) error
 }
 
@@ -17,6 +18,7 @@ func MakeEndpoint(s IService) Endpoints {
 		Create: makeCreateEndpoint(s),
 		Update: makeUpdateEndpoint(s),
 		Delete: makeDeleteEndpoint(s),
+		Get:    makeGetEndpoint(s),
 		Verify: makeVerifyEndpoint(s),
 	}
 }
@@ -25,6 +27,7 @@ type Endpoints struct {
 	Create endpoint.Endpoint
 	Update endpoint.Endpoint
 	Delete endpoint.Endpoint
+	Get    endpoint.Endpoint
 	Verify endpoint.Endpoint
 }
 
@@ -65,6 +68,20 @@ func makeDeleteEndpoint(s IService) endpoint.Endpoint {
 			return DeleteResponse{Success: false}, err
 		} else {
 			return DeleteResponse{
+				Success: true,
+			}, nil
+		}
+	}
+}
+
+func makeGetEndpoint(s IService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetRequest)
+		err := s.Verify(ctx, req.UserID)
+		if err != nil {
+			return VerifyResponse{Success: false}, err
+		} else {
+			return VerifyResponse{
 				Success: true,
 			}, nil
 		}

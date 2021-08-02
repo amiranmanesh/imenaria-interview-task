@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/amiranmanesh/imenaria-interview-task/db/sql"
+	"github.com/amiranmanesh/imenaria-interview-task/user/endpoint"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"gorm.io/gorm"
@@ -95,6 +96,32 @@ func (r repository) Delete(ctx context.Context, userId uint) error {
 
 	logger.Log("User deleted successfully with user id: ", userId)
 	return nil
+}
+
+func (r repository) Get(ctx context.Context, userId uint) (endpoint.UserModel, error) {
+	//TODO: handle ctx
+
+	logger := log.With(r.logger, "Get")
+	logger.Log("Start getting user object with user id: ", userId)
+
+	userInfo := endpoint.UserModel{}
+
+	user := &sql.User{}
+	user.ID = userId
+
+	if err := user.Find(r.db); err != nil {
+		level.Error(logger).Log("Error is: ", err)
+		return userInfo, err
+	}
+
+	userInfo.UserID = user.ID
+	userInfo.Name = user.Name
+	userInfo.Gender = user.Gender
+	userInfo.BirthYear = user.BirthYear
+	userInfo.Avatar = user.Avatar
+
+	logger.Log("User found")
+	return userInfo, nil
 }
 
 func (r repository) Verify(ctx context.Context, userId uint) error {

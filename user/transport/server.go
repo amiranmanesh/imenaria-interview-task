@@ -11,6 +11,7 @@ type grpcServer struct {
 	createHandler grpctransport.Handler
 	updateHandler grpctransport.Handler
 	deleteHandler grpctransport.Handler
+	getHandler    grpctransport.Handler
 	verifyHandler grpctransport.Handler
 }
 
@@ -30,6 +31,11 @@ func NewGRPCServer(ctx context.Context, endpoints endpoint.Endpoints) proto.User
 			endpoints.Delete,
 			endpoint.DecodeDeleteRequest,
 			endpoint.EncodeDeleteResponse,
+		),
+		getHandler: grpctransport.NewServer(
+			endpoints.Get,
+			endpoint.DecodeGetRequest,
+			endpoint.EncodeGetResponse,
 		),
 		verifyHandler: grpctransport.NewServer(
 			endpoints.Verify,
@@ -61,6 +67,14 @@ func (s *grpcServer) Delete(ctx context.Context, request *proto.DeleteRequest) (
 		return nil, err
 	}
 	return response.(*proto.DeleteResponse), nil
+}
+
+func (s *grpcServer) Get(ctx context.Context, request *proto.GetRequest) (*proto.GetResponse, error) {
+	_, response, err := s.getHandler.ServeGRPC(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.(*proto.GetResponse), nil
 }
 
 func (s *grpcServer) Verify(ctx context.Context, request *proto.VerifyRequest) (*proto.VerifyResponse, error) {

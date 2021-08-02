@@ -6,6 +6,14 @@ import (
 )
 
 type (
+	UserModel struct {
+		UserID    uint   `json:"user_id"`
+		Name      string `json:"name"`
+		Gender    string `json:"gender"`
+		BirthYear int    `json:"birth_year"`
+		Avatar    string `json:"avatar"`
+	}
+
 	CreateRequest struct {
 		Name      string `json:"name"`
 		Gender    string `json:"gender"`
@@ -32,6 +40,13 @@ type (
 	DeleteResponse struct {
 		Success bool `json:"success"`
 	}
+	GetRequest struct {
+		UserID uint `json:"user_id"`
+	}
+	GetResponse struct {
+		Success  bool      `json:"success"`
+		UserInfo UserModel `json:"user_info"`
+	}
 	VerifyRequest struct {
 		UserID uint `json:"user_id"`
 	}
@@ -55,13 +70,6 @@ func DecodeCreateRequest(ctx context.Context, request interface{}) (interface{},
 		Gender:    req.Gender,
 		BirthYear: int(req.BirthYear),
 		Avatar:    req.Avatar,
-	}, nil
-}
-
-func EncodeVerifyResponse(ctx context.Context, response interface{}) (interface{}, error) {
-	res := response.(VerifyResponse)
-	return &proto.VerifyResponse{
-		Success: res.Success,
 	}, nil
 }
 
@@ -96,6 +104,34 @@ func DecodeDeleteRequest(ctx context.Context, request interface{}) (interface{},
 		UserID: uint(req.UserId),
 	}, nil
 }
+
+func EncodeGetResponse(ctx context.Context, response interface{}) (interface{}, error) {
+	res := response.(GetResponse)
+	return &proto.GetResponse{
+		Success: res.Success,
+		Info: &proto.UserInfo{
+			Name:      res.UserInfo.Name,
+			Gender:    res.UserInfo.Gender,
+			BirthYear: int32(res.UserInfo.BirthYear),
+			Avatar:    res.UserInfo.Avatar,
+		},
+	}, nil
+}
+
+func DecodeGetRequest(ctx context.Context, request interface{}) (interface{}, error) {
+	req := request.(*proto.GetRequest)
+	return GetRequest{
+		UserID: uint(req.UserId),
+	}, nil
+}
+
+func EncodeVerifyResponse(ctx context.Context, response interface{}) (interface{}, error) {
+	res := response.(VerifyResponse)
+	return &proto.VerifyResponse{
+		Success: res.Success,
+	}, nil
+}
+
 func DecodeVerifyRequest(ctx context.Context, request interface{}) (interface{}, error) {
 	req := request.(*proto.VerifyRequest)
 	return VerifyRequest{
