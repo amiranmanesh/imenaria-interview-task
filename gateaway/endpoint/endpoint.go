@@ -9,11 +9,11 @@ type IService interface {
 	CreateUser(ctx context.Context, name, gender string, birthYear int, avatar string) (uint, error)
 	UpdateUser(ctx context.Context, userId uint, name, gender string, birthYear int, avatar string) error
 	DeleteUser(ctx context.Context, userId uint) error
-	GetUser(ctx context.Context, userId uint) (UserModel, []BankCardModel, error)
+	GetUser(ctx context.Context, userId uint) (*UserModel, []BankCardModel, error)
 	CreateCard(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error)
 	UpdateCard(ctx context.Context, cardId uint, bankName, cardNumber string) error
 	DeleteCard(ctx context.Context, cardId uint) error
-	GetCard(ctx context.Context, userId uint) (BankCardFullModel, error)
+	GetCard(ctx context.Context, cardId uint) (*BankCardFullModel, error)
 }
 
 func MakeEndpoint(s IService) Endpoints {
@@ -92,7 +92,7 @@ func makeGetUserEndpoint(s IService) endpoint.Endpoint {
 		} else {
 			return GetUserResponse{
 				Success:   true,
-				UserInfo:  userInfo,
+				UserInfo:  *userInfo,
 				BankCards: cards,
 			}, nil
 		}
@@ -151,7 +151,7 @@ func makeGetCardEndpoint(s IService) endpoint.Endpoint {
 		} else {
 			return GetCardResponse{
 				Success:  true,
-				CardInfo: res,
+				CardInfo: *res,
 			}, nil
 		}
 	}

@@ -81,7 +81,7 @@ func (s service) DeleteUser(ctx context.Context, userId uint) error {
 	}
 }
 
-func (s service) GetUser(ctx context.Context, userId uint) (endpoint.UserModel, []endpoint.BankCardModel, error) {
+func (s service) GetUser(ctx context.Context, userId uint) (*endpoint.UserModel, []endpoint.BankCardModel, error) {
 	//TODO: implement getting user
 	panic("implement me")
 }
@@ -143,7 +143,25 @@ func (s service) DeleteCard(ctx context.Context, cardId uint) error {
 	}
 }
 
-func (s service) GetCard(ctx context.Context, userId uint) (endpoint.BankCardFullModel, error) {
-	//TODO: implement getting card
-	panic("implement me")
+func (s service) GetCard(ctx context.Context, cardId uint) (*endpoint.BankCardFullModel, error) {
+	req := &cardProto.GetRequest{
+		CardId: int32(cardId),
+	}
+	res, err := s.cardServiceClient.Get(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	resModel := &endpoint.BankCardFullModel{
+		CardID:     uint(res.CardId),
+		BankName:   res.BankName,
+		CardNumber: res.CardNumber,
+		UserID:     uint(res.UserId),
+	}
+
+	if res.Success {
+		return resModel, nil
+	} else {
+		return nil, fmt.Errorf("error in getting card")
+	}
 }
