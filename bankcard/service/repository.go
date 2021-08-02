@@ -126,6 +126,7 @@ func (r repository) GetAll(ctx context.Context, userId uint) ([]endpoint.BankCar
 	logger.Log("Start finding bank card objects with user id %d", userId)
 
 	card := sql.BankCard{}
+	card.UserID = userId
 	cards, err := card.GetAllByUserID(r.db)
 
 	if err != nil {

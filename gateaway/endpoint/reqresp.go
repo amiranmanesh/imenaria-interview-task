@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
 type (
@@ -135,11 +136,12 @@ func DecodeDeleteUserReq(ctx context.Context, r *http.Request) (interface{}, err
 }
 
 func DecodeGetUserReq(ctx context.Context, r *http.Request) (interface{}, error) {
-	var req GetUserRequest
-	err := json.NewDecoder(r.Body).Decode(&req)
+	userId, err := strconv.Atoi(r.URL.Query().Get("user_id"))
 	if err != nil {
 		return nil, err
 	}
+	var req GetUserRequest
+	req.UserID = uint(userId)
 	return req, nil
 }
 
@@ -171,10 +173,11 @@ func DecodeDeleteCardReq(ctx context.Context, r *http.Request) (interface{}, err
 }
 
 func DecodeGetCardReq(ctx context.Context, r *http.Request) (interface{}, error) {
-	var req GetCardRequest
-	err := json.NewDecoder(r.Body).Decode(&req)
+	userId, err := strconv.Atoi(r.URL.Query().Get("card_id"))
 	if err != nil {
 		return nil, err
 	}
+	var req GetCardRequest
+	req.CardID = uint(userId)
 	return req, nil
 }

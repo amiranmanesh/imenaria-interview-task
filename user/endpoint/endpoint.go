@@ -77,12 +77,13 @@ func makeDeleteEndpoint(s IService) endpoint.Endpoint {
 func makeGetEndpoint(s IService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetRequest)
-		err := s.Verify(ctx, req.UserID)
+		res, err := s.Get(ctx, req.UserID)
 		if err != nil {
-			return VerifyResponse{Success: false}, err
+			return GetResponse{Success: false}, err
 		} else {
-			return VerifyResponse{
-				Success: true,
+			return GetResponse{
+				Success:  true,
+				UserInfo: res,
 			}, nil
 		}
 	}
