@@ -65,6 +65,9 @@ func main() {
 		)
 	}
 
+	defer userGrpcConnection.Close()
+	defer cardGrpcConnection.Close()
+
 	var srv endpoint.IService
 	{
 		srv = service.NewService(
