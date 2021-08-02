@@ -31,7 +31,7 @@ func (s service) Create(ctx context.Context, name, gender string, birthYear int,
 	if gender == "" {
 		return 0, fmt.Errorf("gender can not be empty")
 	}
-	if birthYear >= 1000 && birthYear <= 9999 {
+	if birthYear <= 1000 && birthYear >= 9999 {
 		return 0, fmt.Errorf("birth year is out of range")
 	}
 	return s.repository.Create(ctx, name, gender, birthYear, avatar)

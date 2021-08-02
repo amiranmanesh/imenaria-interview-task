@@ -117,6 +117,17 @@ func (s service) GetUser(ctx context.Context, userId uint) (*endpoint.UserModel,
 }
 
 func (s service) CreateCard(ctx context.Context, bankName, cardNumber string, userID uint) (uint, error) {
+	reqUser := &userProto.VerifyRequest{
+		UserId: int32(userID),
+	}
+	resUser, err := s.userServiceClient.Verify(ctx, reqUser)
+	if err != nil {
+		return 0, err
+	}
+	if !resUser.Success {
+		return 0, fmt.Errorf("user does not exist")
+	}
+
 	req := &cardProto.CreateRequest{
 		BankName:   bankName,
 		CardNumber: cardNumber,
