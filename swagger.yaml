@@ -1,0 +1,137 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  BankCardModel:
+    properties:
+      bank_name:
+        type: string
+        x-go-name: BankName
+      card_id:
+        format: uint64
+        type: integer
+        x-go-name: CardID
+      card_number:
+        type: string
+        x-go-name: CardNumber
+    type: object
+    x-go-package: github.com/amiranmanesh/imenaria-interview-task/gateway/endpoint
+  UserModel:
+    properties:
+      avatar:
+        type: string
+        x-go-name: Avatar
+      birth_year:
+        format: int64
+        type: integer
+        x-go-name: BirthYear
+      gender:
+        type: string
+        x-go-name: Gender
+      name:
+        type: string
+        x-go-name: Name
+      user_id:
+        format: uint64
+        type: integer
+        x-go-name: UserID
+    type: object
+    x-go-package: github.com/amiranmanesh/imenaria-interview-task/gateway/endpoint
+host: localhost
+info:
+  contact:
+    email: iranmanesh.ah@gmail.com
+    name: Amir Iranmanesh
+  description: Documentation for the User and the Bank Card API
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+  title: of the main API
+  version: 0.0.1
+paths:
+  /user/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user and return the user_id
+      operationId: create_user
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/CreateUserResponse'
+        "400":
+          $ref: '#/responses/ErrorResponse'
+      tags:
+      - user
+  /user/get:
+    get:
+      consumes:
+      - application/json
+      description: return the user information and all user cards info
+      operationId: get_user
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/GetUserResponse'
+        "400":
+          $ref: '#/responses/ErrorResponse'
+      tags:
+      - user
+produces:
+- application/json
+responses:
+  CreateUserResponse:
+    description: A CreateUserResponse is a response that is used when create new user
+      was successful
+    headers:
+      success:
+        description: |-
+          The operation status
+          Required: true
+        type: boolean
+      user_id:
+        description: |-
+          The new user id in the database
+          Required: true
+        format: uint64
+        type: integer
+  ErrorResponse:
+    description: A ErrorResponse is a response that is used when a request failed
+    headers:
+      error:
+        description: |-
+          The error message
+          Required: true
+        type: string
+      success:
+        description: |-
+          The operation status
+          Required: true
+        type: boolean
+  GetUserResponse:
+    description: A GetUserResponse is a response that is used when get user request
+      was successful
+    headers:
+      success:
+        description: |-
+          The operation status
+          Required: true
+        type: boolean
+      user_cards:
+        description: |-
+          a list of user bank cards that might be empty
+          Required: false
+        items:
+          $ref: '#/definitions/BankCardModel'
+        type: array
+      user_info:
+        description: |-
+          a user info object that contains user information is user exist
+          Required: false
+    schema:
+      $ref: '#/definitions/UserModel'
+schemes:
+- http
+swagger: "2.0"

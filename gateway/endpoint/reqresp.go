@@ -8,6 +8,41 @@ import (
 	"strconv"
 )
 
+// A CreateUserResponse is a response that is used when create new user was successful
+// swagger:response CreateUserResponse
+type CreateUserResponse struct {
+	// The operation status
+	// Required: true
+	Success bool `json:"success"`
+	// The new user id in the database
+	// Required: true
+	UserID uint `json:"user_id"`
+}
+
+// A GetUserResponse is a response that is used when get user request was successful
+// swagger:response GetUserResponse
+type GetUserResponse struct {
+	// The operation status
+	// Required: true
+	Success bool `json:"success"`
+	// a user info object that contains user information is user exist
+	// Required: false
+	UserInfo UserModel `json:"user_info"`
+	// a list of user bank cards that might be empty
+	// Required: false
+	BankCards []BankCardModel `json:"user_cards"`
+}
+
+// A ErrorResponse is a response that is used when a request failed
+// swagger:response ErrorResponse
+type ErrorResponse struct {
+	// The operation status
+	// Required: true
+	Success bool `json:"success"`
+	// The error message
+	// Required: true
+	Error string `json:"error"`
+}
 type (
 	UserModel struct {
 		UserID    uint   `json:"user_id"`
@@ -34,10 +69,7 @@ type (
 		BirthYear int    `json:"birth_year"`
 		Avatar    string `json:"avatar"`
 	}
-	CreateUserResponse struct {
-		Success bool `json:"success"`
-		UserID  uint `json:"user_id"`
-	}
+
 	UpdateUserRequest struct {
 		UserID    uint   `json:"user_id"`
 		Name      string `json:"name"`
@@ -56,11 +88,6 @@ type (
 	}
 	GetUserRequest struct {
 		UserID uint `json:"user_id"`
-	}
-	GetUserResponse struct {
-		Success   bool            `json:"success"`
-		UserInfo  UserModel       `json:"user_info"`
-		BankCards []BankCardModel `json:"user_cards"`
 	}
 
 	UploadAvatarRequest struct {
@@ -101,11 +128,6 @@ type (
 	GetCardResponse struct {
 		Success  bool              `json:"success"`
 		CardInfo BankCardFullModel `json:"card_info"`
-	}
-
-	ErrorResponse struct {
-		Success bool   `json:"success"`
-		Error   string `json:"error"`
 	}
 )
 
